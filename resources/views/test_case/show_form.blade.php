@@ -1,6 +1,6 @@
 <div id="test_case_editor">
 
-    <div class="d-flex justify-content-between border-bottom mt-2 pb-2 mb-2">
+    <div class="tc-header d-flex justify-content-between border-bottom mt-2 pb-2 mb-2">
 
 
         <div style="min-width: 140px">

@@ -32,7 +32,7 @@ function updateCasesOrder() {
 function getTestCaseDataFromForm() {
     let testCase = {};
 
-    testCase.id = $("#tce_case_id").val();
+    testCase.id = Number.parseInt($("#tce_case_id").val() || $("#tce_case_id").text(), 10);
     testCase.title = $("#tce_title_input").val();
     testCase.suite_id = $("#tce_test_suite_select").val();
     testCase.automated = $("#tce_automated_select").val();
@@ -121,7 +121,8 @@ function updateTestCase() {
         success: function (data) {  // response is case html and json
             let testCase = $.parseJSON(data.json);
             renderTestCase(testCase.id)
-            loadCasesList(testCase.suite_id);
+            if (isRepositoryOpened())
+                loadCasesList(testCase.suite_id);
         }
     });
 }

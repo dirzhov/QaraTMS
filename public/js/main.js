@@ -93,6 +93,15 @@ function sortTreeByParentId() {
 }
 
 
+/**************************************************
+ * Check if repository page is opened
+ *************************************************/
+
+function isRepositoryOpened() {
+    return $('#suites_tree_col').is(":visible")
+}
+
+
 /****************************************************************************
  * RESIZABLE for test case viewer
  *****************************************************************************/
