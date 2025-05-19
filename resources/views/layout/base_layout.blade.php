@@ -24,17 +24,18 @@
         jiraUrl = "{{ Config::get('app.jira_host') }}";
         jiraToken = "{{ Config::get('app.jira_token') }}";
         userId = {{Auth::id()}};
+        csrf_token = "{{ csrf_token() }}";
 
         function renderPriority(value, includeText) {
-            if (value == {{\App\Enums\CasePriority::LOWEST}})
+            if (value == {{\App\Enums\CasePriority::LOWEST->value}})
                 return `<i class='bi me-1 bi-chevron-double-down text-warning'></i>${includeText?'P5':''}`
-            if (value == {{\App\Enums\CasePriority::LOW}})
+            if (value == {{\App\Enums\CasePriority::LOW->value}})
                 return `<i class='bi me-1 bi-chevron-down text-warning'></i>${includeText?'P4':''}`
-            if (value == {{\App\Enums\CasePriority::MEDIUM}})
+            if (value == {{\App\Enums\CasePriority::MEDIUM->value}})
                 return `<i class='bi me-1 bi-list text-info'></i>${includeText?'P3':''}`
-            if (value == {{\App\Enums\CasePriority::HIGH}})
+            if (value == {{\App\Enums\CasePriority::HIGH->value}})
                 return `<i class='bi me-1 bi-chevron-up text-danger'></i>${includeText?'P2':''}`
-            if (value == {{\App\Enums\CasePriority::HIGHEST}})
+            if (value == {{\App\Enums\CasePriority::HIGHEST->value}})
                 return `<i class='bi me-1 bi-chevron-double-up text-danger'></i>${includeText?'P1':''}`
         }
     </script>

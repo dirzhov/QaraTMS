@@ -10,7 +10,7 @@
                 {{__('Dashboard of project')}}: <span class="badge bg-primary text-wrap">{{$project->title}}</span>
             </h3>
             <div>
-                @can('add_edit_projects')
+                @can(UserPermission::add_edit_projects)
                     <a href="{{route('project_edit_page', $project->id)}}" class="btn btn-sm btn-secondary">
                         <i class="bi bi-gear"></i>
                         {{__('Settings')}}
@@ -124,7 +124,7 @@
             <h3 class="page_title">
                 {{ __('Repositories') }}
 
-                @can('add_edit_repositories')
+                @can(UserPermission::add_edit_repositories)
                     <a class="mx-3" href="{{route("repository_create_page", $project->id)}}">
                         <button type="button" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg"></i>
                             {{ __('Add New') }}

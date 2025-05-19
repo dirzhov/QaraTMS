@@ -21,7 +21,7 @@
             </h3>
 
             <div>
-                @can('delete_repositories')
+                @can(App\Enums\UserPermission::delete_repositories)
                     <form method="POST" action="{{route("repository_delete")}}">
                         @csrf
                         <input type="hidden" name="id" value="{{$repository->id}}">

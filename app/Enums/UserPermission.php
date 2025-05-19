@@ -21,6 +21,7 @@ enum UserPermission: string
     case delete_documents = 'delete_documents';
     case view_automation_runs = 'view_automation_runs';
     case manage_automation_runs = 'manage_automation_runs';
+    case add_edit_product_versions = 'add_edit_product_versions';
     case change_review_assignee = 'change_review_assignee';
 
     public function summary(): string {
@@ -42,6 +43,7 @@ enum UserPermission: string
             UserPermission::manage_users => "Manage Users",
             UserPermission::view_automation_runs => "View Automation Runs",
             UserPermission::manage_automation_runs => "Manage Automation Runs",
+            UserPermission::add_edit_product_versions => "Product Version",
             UserPermission::change_review_assignee => "Change Review Assignee",
         };
     }

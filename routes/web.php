@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\ProductVersionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RepositoryController;
 use App\Http\Controllers\TestCaseController;
@@ -84,6 +85,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/project/create', [ProjectController::class, 'store'])->name("project_create");
     Route::post('/project/update', [ProjectController::class, 'update'])->name("project_update");
     Route::post('/project/delete', [ProjectController::class, 'destroy'])->name("project_delete");
+
+    Route::get('/project/{project_id}/product_version', [ProductVersionController::class, 'index']);
+    Route::post('/project/{project_id}/product_version', [ProductVersionController::class, 'store']);
+    Route::put('/product_version/{id}', [ProductVersionController::class, 'update']);
+    Route::delete('/product_version/{id}', [ProductVersionController::class, 'destroy']);
 
 
     /**********************************************************************
@@ -279,7 +285,7 @@ Route::middleware(['auth'])->group(function () {
         ->where('document_id', '[0-9]+')
         ->name("document_show_page");
 
-    Route::get('/project/{project_id}/documents/{document_id}/edit', [DocumentsController::class, 'index'])
+    Route::get('/project/{project_id}/documents/{document_id}/edit', [DocumentsController::class, 'edit'])
         ->where('project_id', '[0-9]+')
         ->where('document_id', '[0-9]+')
         ->name("document_edit_page");

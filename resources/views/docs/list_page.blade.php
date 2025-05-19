@@ -11,7 +11,7 @@
             <h3 class="page_title">
                 Documents
 
-                @can('add_edit_documents')
+                @can(App\Enums\UserPermission::add_edit_documents)
                     <a class="mx-3" href="{{route("document_create_page", $project->id)}}">
                         <button type="button" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg"></i> Add New
                         </button>
@@ -50,7 +50,7 @@
                         </div>
 
                         <div class="mt-2">
-                            @can('add_edit_documents')
+                            @can(App\Enums\UserPermission::add_edit_documents)
                                 <a href="{{route('document_edit_page', [$selectedDocument->project_id, $selectedDocument->id])}}"
                                    class="btn btn-sm btn-outline-secondary" title="Edit">
                                     <i class="bi bi-pencil"></i>
@@ -58,7 +58,7 @@
                             @endcan
 
 
-                            @can('delete_documents')
+                            @can(App\Enums\UserPermission::delete_documents)
                                 <form method="POST" action="{{route("document_delete")}}" style="display: inline-block">
                                     @csrf
                                     <input type="hidden" name="id" value="{{$selectedDocument->id}}">

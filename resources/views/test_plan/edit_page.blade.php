@@ -14,7 +14,7 @@
                 {{$testPlan->title}}
             </h3>
 
-            @can('delete_test_plans')
+            @can(App\Enums\UserPermission::delete_test_plans)
                 <form method="POST" action={{route("test_plan_delete")}}>
                     @csrf
                     <input type="hidden" name="project_id" value="{{$project->id}}">
@@ -78,6 +78,27 @@
                             @endforeach
 
                         </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="testing_type_id" class="form-label col-3">Testing type</label>
+                        <select id="testing_type_id" name="testing_type" class="selectpicker">
+                            @foreach (App\Enums\TestingType::cases() as $option)
+                                <option value="{{$option->value}}" data-content="<i class='bi {{$option->cls()}} me-1'>
+                                </i>{{ucfirst(mb_strtolower($option->name))}}" {{ ( $option->value == $testPlan->type) ? 'selected' : '' }}></option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="product_version_id" class="form-label col-3">Product Version</label>
+                        <select id="product_version_id" name="product_version" class="selectpicker">
+                            @foreach ($productVersions as $version)
+                                <option value="{{$version->id}}" {{ ( $version->id == $testPlan->version) ? 'selected' : '' }}
+                                >{{ucfirst(mb_strtolower($version->name))}}</option>
+                            @endforeach
+                        </select>
+
                     </div>
 
                     <div class="mb-3">

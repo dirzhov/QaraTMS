@@ -187,6 +187,12 @@
                                 <input name="manage_automation_runs" class="form-check-input" type="checkbox">
                             </td>
                         </tr>
+                        <tr>
+                            <th scope="row">{{UserPermission::add_edit_product_versions->summary()}}</th>
+                            <td colspan="2" style="padding-left: 20%;">
+                                <input name="add_edit_product_versions" class="form-check-input" type="checkbox">
+                            </td>
+                        </tr>
 
                         </tbody>
                     </table>

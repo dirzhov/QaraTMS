@@ -256,5 +256,11 @@ class UsersController extends Controller
         } else {
             $user->revokePermissionTo(UserPermission::manage_automation_runs);
         }
+
+        if ($request->add_edit_product_versions) {
+            $user->givePermissionTo(UserPermission::add_edit_product_versions);
+        } else {
+            $user->revokePermissionTo(UserPermission::add_edit_product_versions);
+        }
     }
 }

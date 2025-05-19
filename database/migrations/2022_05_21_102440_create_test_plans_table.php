@@ -16,9 +16,9 @@ class CreateTestPlansTable extends Migration
         Schema::create('test_plans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
-            $table->integer('repository_id');
-            $table->integer('version')->comment("version of tested product");
-            $table->integer('type')->default(\App\Enums\TestingType::Regression)->comment("testing type");
+            $table->unsignedBigInteger('repository_id');
+            $table->unsignedInteger('version')->comment("version of tested product");
+            $table->unsignedInteger('type')->default(\App\Enums\TestingType::Regression)->comment("testing type");
             $table->string('title');
             $table->string('description')->nullable();
             $table->longText('data')->nullable();

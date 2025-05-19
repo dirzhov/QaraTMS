@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserPermission;
+use App\Http\Requests\TestPlanRequest;
+use App\Models\ProductVersion;
 use App\Models\Project;
 use App\Models\Repository;
 use App\Models\Suite;
@@ -18,7 +20,7 @@ class TestPlanController extends Controller
 
     public function useHooks()
     {
-        $this->beforeCalling(['store', 'update'], function ($request, ...$params) {
+        $this->beforeCalling(['create', 'edit', 'store', 'update'], function ($request, ...$params) {
             if (!auth()->user()->can(UserPermission::add_edit_test_plans)) {
                 return response(null, 403);
             }
@@ -63,48 +65,42 @@ class TestPlanController extends Controller
 
     public function create($project_id)
     {
-        if (!auth()->user()->can(UserPermission::add_edit_test_plans)) {
-            abort(403);
-        }
-
         $project = Project::findOrFail($project_id);
         $repositories = $project->repositories;
+        $productVersions = ProductVersion::allActive($project_id);
 
         return view('test_plan.create_page')
             ->with('project', $project)
-            ->with('repositories', $repositories);
+            ->with('repositories', $repositories)
+            ->with('productVersions', $productVersions);
     }
 
     public function edit($project_id, $test_plan_id)
     {
-        if (!auth()->user()->can(UserPermission::add_edit_test_plans)) {
-            abort(403);
-        }
-
         $project = Project::findOrFail($project_id);
         $repositories = $project->repositories;
         $testPlan = TestPlan::findOrFail($test_plan_id);
         $testSuitesTree = Suite::where('repository_id',
             $testPlan->repository_id)->orderBy('order')->tree()->get()->toTree();
         $prefix = Repository::findOrFail($testPlan->repository_id)->prefix;
+        $productVersions = ProductVersion::allActive($project_id);
 
         return view('test_plan.edit_page')
             ->with('project', $project)
             ->with('testPlan', $testPlan)
             ->with('repositories', $repositories)
             ->with('prefix', $prefix)
-            ->with('testSuitesTree', $testSuitesTree);
+            ->with('testSuitesTree', $testSuitesTree)
+            ->with('productVersions', $productVersions);
     }
 
     /*****************************************
      *  CRUD
      *****************************************/
 
-    public function store(Request $request)
+    public function store(TestPlanRequest $request)
     {
-        $request->validate([
-            'title' => 'required',
-        ]);
+        $request->validate([]);
 
         $testPlan = new TestPlan();
 
@@ -113,6 +109,8 @@ class TestPlanController extends Controller
         $testPlan->repository_id = $request->repository_id;
         $testPlan->description = $request->description;
         $testPlan->data = $request->data;  // это строка с id выбранных тест кейсов - 1,2,3 etc
+        $testPlan->type = $request->testing_type;
+        $testPlan->version = $request->product_version;
         $testPlan->creator_id = $this->creator->id;
 
         $testPlan->save();
@@ -120,14 +118,18 @@ class TestPlanController extends Controller
         return redirect()->route('test_plan_list_page', $request->project_id);
     }
 
-    public function update(Request $request)
+    public function update(TestPlanRequest $request)
     {
+        $request->validate([]);
+
         $testPlan = TestPlan::findOrFail($request->id);
 
         $testPlan->title = $request->title;
         $testPlan->description = $request->description;
         $testPlan->repository_id = $request->repository_id;
         $testPlan->data = $request->data;  // это строка с id выбранных тест кейсов - 1,2,3 etc
+        $testPlan->type = $request->testing_type;
+        $testPlan->version = $request->product_version;
         $testPlan->creator_id = $this->creator->id;
 
         $testPlan->save();
@@ -135,7 +137,7 @@ class TestPlanController extends Controller
         return redirect()->route('test_plan_update_page', [$request->project_id, $request->id]);
     }
 
-    public function destroy(Request $request)
+    public function destroy(TestPlanRequest $request)
     {
         if (!auth()->user()->can(UserPermission::delete_test_plans)) {
             abort(403);

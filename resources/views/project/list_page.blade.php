@@ -5,7 +5,7 @@
         <div class="border-bottom my-3">
             <h3 class="page_title">
                 {{ __('Projects') }}
-                @can('add_edit_projects')
+                @can(App\Enums\UserPermission::add_edit_projects)
                     <a href="{{route("project_create_page")}}">
                         <button type="button" class="btn btn-primary"><i class="bi bi-plus-lg"></i>
                             {{ __('Create new project') }}

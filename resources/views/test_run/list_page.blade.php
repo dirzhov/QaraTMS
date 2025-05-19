@@ -10,7 +10,7 @@
             <h3 class="page_title">
                 Test Runs
 
-                @can('add_edit_test_runs')
+                @can(App\Enums\UserPermission::add_edit_test_runs)
                     <a class="mx-3" href="{{route("test_run_create_page", [$project->id, 0])}}">
                         <button type="button" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg"></i> New Test Run
                         </button>

@@ -31,7 +31,7 @@
 
         <div style="min-width: 105px" class="justify-content-end">
 
-            @can('add_edit_test_cases')
+            @can(App\Enums\UserPermission::add_edit_test_cases)
                 <button type="button" class="btn btn-outline-dark btn-sm"
                         onclick="renderTestCaseEditForm({{$testCase->id}})">
                     <i class="bi bi-pencil"></i>
@@ -101,7 +101,7 @@
                     @foreach($data->steps as $id => $step)
                         <div class="row step border-top mb-2 pt-2" data-badge="{{$id+1}}">
 
-                            <sapn class="step-number">{{$id+1}}</sapn>
+                            <span class="step-number">{{$id+1}}</span>
                             <div class="col-6">
                                 <div>
                                     @if(isset($step->action))

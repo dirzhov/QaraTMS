@@ -47,6 +47,8 @@ class AdminSeeder extends Seeder
         Permission::create(['name' => UserPermission::add_edit_documents]);
         Permission::create(['name' => UserPermission::delete_documents]);
 
+        Permission::create(['name' => UserPermission::add_edit_product_versions]);
+
         Permission::create(['name' => UserPermission::view_automation_runs]);
         Permission::create(['name' => UserPermission::manage_automation_runs]);
         Permission::create(['name' => UserPermission::change_review_assignee]);
@@ -75,6 +77,8 @@ class AdminSeeder extends Seeder
 
             UserPermission::add_edit_documents,
             UserPermission::delete_documents,
+
+            UserPermission::add_edit_product_versions,
 
             UserPermission::view_automation_runs,
             UserPermission::manage_automation_runs,

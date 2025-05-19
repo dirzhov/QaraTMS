@@ -497,6 +497,16 @@ b.suspended {
     padding: .200rem 1.75rem .200rem .50rem;
 }
 
+.form-select[multiple], .form-select[size]:not([size="1"]) {
+    option {
+        padding: 4px 8px;
+    }
+    option.deactivated {
+        color: #adadad;
+        text-decoration: line-through;
+    }
+}
+
 .autotest-run-progress {
     display: inline-block;
     width: 100%;

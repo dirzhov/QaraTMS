@@ -22,7 +22,7 @@
         <div class="border-bottom mt-2 pb-2 mb-2 clearfix">
             <div class="fs-5 clearfix">
                 <span class="text-muted">Repository:</span> {{$repository->title}}
-                @can('add_edit_repositories')
+                @can(UserPermission::add_edit_repositories)
                     <a href="{{route('repository_edit_page', [$project->id, $repository->id])}}"
                        class="btn btn-sm btn-outline-dark me-1 float-end"
                        title="Repository Settings">
@@ -32,7 +32,7 @@
             </div>
 
             <div>
-                @can('add_edit_test_suites')
+                @can(UserPermission::add_edit_test_suites)
                     <button id="add_root_suite_btn" class="btn btn-primary btn-sm float-end mt-1" type="button" title="Add Test Suite"
                             onclick="showSuiteForm('create')">
                         <i class="bi bi-plus-lg"></i> Test Suite
@@ -63,7 +63,7 @@
                 </span>
                 </div>
 
-                @can('add_edit_test_cases')
+                @can(UserPermission::add_edit_test_cases)
                     <button class="btn btn-primary btn-sm mx-2" type="button" title="Add Test Case"
                             onclick="loadTestCaseCreateForm()">
                         <i class="bi bi-plus-lg"></i> Test Case
@@ -91,7 +91,7 @@
                 <input id="repository_id" type="hidden" value="{{$repository->id}}">
                 <div class="mb-3">
                     <label for="title" class="form-label">Suite name</label>
-                    <input type="title" class="form-control" id="test_suite_title_input" placeholder="New test suite">
+                    <input name="title" class="form-control" id="test_suite_title_input" placeholder="New test suite">
                 </div>
                 <div class="d-flex justify-content-end mb-3">
                     <button id="tsf_update_btn" type="button" class="btn btn-success mx-3" style="display: none"

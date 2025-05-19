@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserPermission;
+use App\Models\ProductVersion;
 use App\Models\Project;
 use App\Models\Repository;
 use App\Models\TestRun;
@@ -55,8 +56,10 @@ class ProjectController extends Controller
     public function edit($id)
     {
         $project = Project::findOrFail($id);
+        $versions = ProductVersion::all();
         return view('project.edit_page')
-            ->with('project', $project);
+            ->with('project', $project)
+            ->with('versions', $versions);
     }
 
     /*****************************************

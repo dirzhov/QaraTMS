@@ -216,6 +216,14 @@
                             </td>
                         </tr>
 
+                        <tr>
+                            <th scope="row">{{UserPermission::add_edit_product_versions->summary()}}</th>
+                            <td colspan="2" style="padding-left: 20%;">
+                                <input name="{{UserPermission::add_edit_product_versions}}" class="form-check-input" type="checkbox"
+                                       @if($user->can(UserPermission::add_edit_product_versions)) checked @endif>
+                            </td>
+                        </tr>
+
                         </tbody>
                     </table>
 

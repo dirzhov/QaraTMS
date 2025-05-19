@@ -58,6 +58,25 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="testing_type_id" class="form-label col-3">Testing type</label>
+                        <select id="testing_type_id" name="testing_type" class="selectpicker">
+                            @foreach (App\Enums\TestingType::cases() as $option)
+                                <option value="{{$option->value}}" data-content="<i class='bi {{$option->cls()}} me-1'></i>{{ucfirst(mb_strtolower($option->name))}}"></option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="product_version_id" class="form-label col-3">Product Version</label>
+                        <select id="product_version_id" name="product_version" class="selectpicker">
+                            @foreach ($productVersions as $version)
+                                <option value="{{$version->id}}">{{ucfirst(mb_strtolower($version->name))}}</option>
+                            @endforeach
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
                         <textarea class="form-control" name="description" maxlength="255" rows="7"> </textarea>
                     </div>

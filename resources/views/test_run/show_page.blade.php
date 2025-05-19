@@ -13,7 +13,7 @@
                  Test Run  <i class="bi bi-arrow-right-short"></i> {{$testRun->title}}
             </span>
 
-            @can('add_edit_test_runs')
+            @can(UserPermission::add_edit_test_runs)
                 <a href="{{route('test_run_edit_page', [$testRun->project_id, $testRun->id])}}"
                    class="btn btn-sm btn-outline-dark me-1"
                    title="Repository Settings">
