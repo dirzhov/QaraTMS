@@ -1,11 +1,9 @@
 <?php
-
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAutomationResultsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -25,7 +23,7 @@ class CreateAutomationResultsTable extends Migration
             $table->text("error_message")->nullable()->comment("short error message, fails could be grouped by this message");
             $table->bigInteger("error_message_hash")->nullable()->comment("used for grouping");
             $table->text("full_error")->nullable()->comment("full error/exception message");
-            $table->unsignedBigInteger("start_time", 6)->nullable(false)->comment("start time of test case");
+            $table->unsignedBigInteger("start_time")->nullable(false)->comment("start time of test case");
             $table->float("execution_time")->nullable();
             $table->string("screenshot_path")->nullable();
             $table->unsignedBigInteger("rerun_id")->nullable()->comment("run_id related to current execution");
@@ -42,4 +40,4 @@ class CreateAutomationResultsTable extends Migration
     {
         Schema::dropIfExists('test_results');
     }
-}
+};
