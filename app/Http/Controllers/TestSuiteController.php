@@ -2,23 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserPermission;
 use App\Models\Repository;
 use App\Models\Suite;
 use App\Models\TestCase;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TestSuiteController extends Controller
 {
+    private User $creator;
+
+    public function useHooks()
+    {
+        $this->beforeCalling(['store', 'update', 'updateOrder', 'updateParent'], function ($request, ...$params) {
+            if (!auth()->user()->can(UserPermission::add_edit_test_suites)) {
+                return response(null, 403);
+            }
+            $this->creator = User::findOrFail(Auth::id());
+        });
+    }
+
     /******************************************
      *  AJAX and html elements
      *****************************************/
 
     public function updateParent(Request $request)
     {
-        if (!auth()->user()->can('add_edit_test_suites')) {
-            abort(403);
-        }
-
         $testSuite = Suite::findOrFail($request->id);
         $testSuite->parent_id = $request->parent_id;
         $testSuite->save();
@@ -26,11 +37,7 @@ class TestSuiteController extends Controller
 
     public function updateOrder(Request $request)
     {
-        if (!auth()->user()->can('add_edit_test_suites')) {
-            abort(403);
-        }
-
-        foreach ($request->order as $data) {
+         foreach ($request->order as $data) {
             $testSuite = Suite::findOrFail($data['id']);
             $testSuite->order = $data['order'];
             $testSuite->save();
@@ -69,15 +76,12 @@ class TestSuiteController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->can('add_edit_test_suites')) {
-            abort(403);
-        }
-
         $suite = new Suite();
 
         $suite->repository_id = $request->repository_id;
         $suite->parent_id = $request->parent_id;
         $suite->title = $request->title;
+        $suite->creator_id = $this->creator->id;
         $suite->save();
 
         return [
@@ -88,13 +92,10 @@ class TestSuiteController extends Controller
 
     public function update(Request $request)
     {
-        if (!auth()->user()->can('add_edit_test_suites')) {
-            abort(403);
-        }
-
         $testSuite = Suite::findOrFail($request->id);
 
         $testSuite->title = $request->title;
+        $testSuite->creator_id = $this->creator->id;
         $testSuite->save();
 
         // TODO  - add move to other repository functionality

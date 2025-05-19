@@ -6,9 +6,13 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RepositoryController;
 use App\Http\Controllers\TestCaseController;
 use App\Http\Controllers\TestPlanController;
+use App\Http\Controllers\TestResultReviewController;
 use App\Http\Controllers\TestRunController;
+use App\Http\Controllers\TestResultController;
 use App\Http\Controllers\TestSuiteController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\AutomationTestRunController;
+use App\Http\Controllers\Api\AutomationTestRunApiController;
 use Illuminate\Support\Facades\Route;
 
 /**********************************************************************
@@ -145,6 +149,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/test-case-overlay/{test_case_id}', [TestCaseController::class, 'loadShowOverlay'])
         ->where('test_case_id', '[0-9]+');
 
+    Route::get('/test-case-with-result-overlay/{test_result_id}', [TestCaseController::class, 'loadShowWithResultOverlay'])
+        ->where('test_result_id', '[0-9]+');
+
     Route::get('/test-case/{test_case_id}', [TestCaseController::class, 'show'])
         ->where('test_case_id', '[0-9]+')
         ->name('test_case_show_page');
@@ -153,6 +160,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test-case/create', [TestCaseController::class, 'store'])->name("test_case_create");
     Route::post('/test-case/update', [TestCaseController::class, 'update'])->name("test_case_update");
     Route::post('/test-case/delete', [TestCaseController::class, 'destroy'])->name("test_case_delete");
+    Route::post('/test-case/clone', [TestCaseController::class, 'clone'])->name("test_case_clone");
 
     /**********************************************************************
      * TEST PLAN
@@ -191,8 +199,9 @@ Route::middleware(['auth'])->group(function () {
         ->where('project_id', '[0-9]+')
         ->name("test_run_list_page");
 
-    Route::get('/project/{project_id}/test-run/create', [TestRunController::class, 'create'])
+    Route::get('/project/{project_id}/test-run/create/{is_automation}', [TestRunController::class, 'create'])
         ->where('project_id', '[0-9]+')
+        ->where('is_automation', '[0-1]+')
         ->name("test_run_create_page");
 
     Route::get('/project/{project_id}/test-run/{test_run_id}', [TestRunController::class, 'show'])
@@ -221,6 +230,38 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test-run/delete', [TestRunController::class, 'destroy'])->name("test_run_delete");
 
 
+    /*************************************
+     * PROJECT AUTOMATION TEST RUN PAGES
+     *************************************/
+
+    Route::get('/project/{project_id}/autotest-runs', [AutomationTestRunController::class, 'index'])
+        ->where('project_id', '[0-9]+')
+        ->name("autotest_run_list_page");
+
+    Route::get('/api/project/{project_id}/autotest-runs', [AutomationTestRunApiController::class, 'index'])
+        ->where('project_id', '[0-9]+');
+
+    Route::get('/test-run/{test_run_id}/test-results', [TestResultController::class, 'index'])
+        ->where('test_run_id', '[0-9]+')
+        ->name("test_results_page");
+    Route::get('/atrchart/{test_run_id}', [TestResultController::class, 'loadChart'])
+        ->where('test_run_id', '[0-9]+');
+
+    Route::get('/test_run/{test_run_id}/statistics', [TestResultController::class, 'statistics'])
+        ->where('test_run_id', '[0-9]+')
+        ->name('statistics');
+
+    Route::get('/api/test-run/{test_run_id}/test-results', [TestResultController::class, 'list'])
+        ->where('test_run_id', '[0-9]+');
+    Route::get('/api/screenshot/{id}', [TestResultController::class, 'get_screenshot']);
+    Route::get('/api/testlog/{id}', [TestResultController::class, 'get_testlog']);
+
+    Route::get('/test_result_review/{test_result_id}', [TestResultReviewController::class, 'show'])
+        ->where('test_result_id', '[0-9]+');
+    Route::post('/test_result_review', [TestResultReviewController::class, 'store']);
+    Route::put('/test_result_review', [TestResultReviewController::class, 'update']);
+
+
     /**********************************************************************
      * DOCUMENTS
      **********************************************************************/
@@ -238,7 +279,7 @@ Route::middleware(['auth'])->group(function () {
         ->where('document_id', '[0-9]+')
         ->name("document_show_page");
 
-    Route::get('/project/{project_id}/documents/{document_id}/edit', [DocumentsController::class, 'edit'])
+    Route::get('/project/{project_id}/documents/{document_id}/edit', [DocumentsController::class, 'index'])
         ->where('project_id', '[0-9]+')
         ->where('document_id', '[0-9]+')
         ->name("document_edit_page");

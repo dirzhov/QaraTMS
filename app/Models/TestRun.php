@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\TestRunCaseStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 
 /**
@@ -38,10 +39,31 @@ class TestRun extends Model
         $testRunData = [];
 
         foreach ($testCasesIds as $testCaseId) {
-            $testRunData[$testCaseId] = TestRunCaseStatus::NOT_TESTED;
+            $testRunData[$testCaseId] = (object) ['s' => TestRunCaseStatus::NOT_TESTED, 'i' => ''];
         }
         return json_encode($testRunData);
     }
+
+    public function getAutomationChartData()
+    {
+        $total = DB::scalar("select count(id) from test_results where test_run_id=". $this->id);
+
+        $totalTestCases = $total != 0 ? $total : 1;
+
+        $passed = DB::scalar("select count(id) from test_results where status=1 AND test_run_id=". $this->id);
+        $failed = DB::scalar("select count(id) from test_results where status=2 AND test_run_id=". $this->id);
+        $skipped = DB::scalar("select count(id) from test_results where status=3 AND test_run_id=". $this->id);
+
+        // [number, percent]
+        $chartData = [
+            'passed' => [$passed, (100 / $totalTestCases) * $passed],
+            'failed' => [$failed, (100 / $totalTestCases) * $failed],
+            'skipped' => [$skipped, (100 / $totalTestCases) * $skipped]
+        ];
+
+        return $chartData;
+    }
+
 
     public function getChartData()
     {
@@ -53,8 +75,8 @@ class TestRun extends Model
         $blocked = 0;
         $notTested = 0;
 
-        foreach ($results as $testCaseId => $status) {
-
+        foreach ($results as $testCaseId => $tc) {
+            $status = $tc->s;
             if ($status == TestRunCaseStatus::PASSED) {
                 $passed++;
             } elseif ($status == TestRunCaseStatus::FAILED) {

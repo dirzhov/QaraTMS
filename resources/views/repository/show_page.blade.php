@@ -16,30 +16,28 @@
 @section('content')
 
     {{--    TEST SUITES TREE COLUMN--}}
-    <div class="col-3 shadow-sm" id="suites_tree_col">
+    <div class="col-2 shadow-sm" id="suites_tree_col">
 
         {{-- COLUMN header--}}
-        <div class="border-bottom mt-2 pb-2 mb-2 d-flex justify-content-between">
-            <span class="fs-5">
+        <div class="border-bottom mt-2 pb-2 mb-2 clearfix">
+            <div class="fs-5 clearfix">
                 <span class="text-muted">Repository:</span> {{$repository->title}}
-            </span>
-
-            <div>
-                @can('add_edit_test_suites')
-                    <button id="add_root_suite_btn" class="btn btn-primary btn-sm" type="button" title="Add Test Suite"
-                            onclick="showSuiteForm('create')">
-                        <i class="bi bi-plus-lg"></i> Test Suite
-                    </button>
-                @endcan
-
                 @can('add_edit_repositories')
                     <a href="{{route('repository_edit_page', [$project->id, $repository->id])}}"
-                       class="btn btn-sm btn-outline-dark me-1"
+                       class="btn btn-sm btn-outline-dark me-1 float-end"
                        title="Repository Settings">
                         <i class="bi bi-gear"></i>
                     </a>
                 @endcan
+            </div>
 
+            <div>
+                @can('add_edit_test_suites')
+                    <button id="add_root_suite_btn" class="btn btn-primary btn-sm float-end mt-1" type="button" title="Add Test Suite"
+                            onclick="showSuiteForm('create')">
+                        <i class="bi bi-plus-lg"></i> Test Suite
+                    </button>
+                @endcan
             </div>
         </div>
 
@@ -52,7 +50,7 @@
     </div>
 
 
-    <div id="test_cases_list_col" class="col-9 shadow-sm">
+    <div id="test_cases_list_col" class="col-10 shadow-sm">
         {{-- COLUMN header--}}
         <div class="border-bottom mt-2 pb-2 ">
 
@@ -78,7 +76,7 @@
         <div id="test_cases_list">  {{--  js load --}}  </div>
     </div>
 
-    <div id="test_case_col" class="col-5 shadow-sm">
+    <div id="test_case_col" class="col-6 shadow-sm">
         <div id="test_case_area"></div>
     </div>
 

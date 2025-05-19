@@ -79,4 +79,54 @@ $(document).ready(function () {
         });
         $('#test_plan_data').val(selected);
     }
+
+
+    window.filter = {};
+
+    function filterCases() {
+        var priorities = window.filter.priority,
+            automations = window.filter.automation;
+
+        if ((!priorities || priorities.length == 0) && (!automations || automations.length == 0)) {
+            // uncheck all;
+            deselectAllTestPlanCases();
+            return;
+        }
+
+        $('.test_case_cbx').each((index, el) => {
+            var include = false,
+                id = $(el).data('test_case_id'),
+                priority = $(el).data('priority'),
+                automation = $(el).data('automation');
+
+            if (automations && automations.length && priorities && priorities.length) {
+                include = priorities.includes(priority) && automations.includes(automation);
+            } else if (priorities && priorities.length) {
+                include = priorities.includes(priority);
+            } else if (automations && automations.length) {
+                include = automations.includes(automation);
+            }
+
+            if (include) {
+                if (!$('[data-test_case_id="' + id + '"]').prop("checked"))
+                    $('[data-test_case_id="' + id + '"]').click();
+            } else {
+                if ($('[data-test_case_id="' + id + '"]').prop("checked"))
+                    $('[data-test_case_id="' + id + '"]').click();
+            }
+
+        });
+
+    }
+
+    $('#priority_select').on('change', function() {
+        window.filter.priority = $(this).val().map(i => parseInt(i));
+        filterCases();
+    })
+
+    $('#automation_select').on('change', function() {
+        window.filter.automation = $(this).val().map(i => parseInt(i));
+        filterCases();
+    });
+
 });

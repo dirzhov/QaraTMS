@@ -30,13 +30,13 @@
                         <div class="result_badge pt-1 pe-2" data-test_case_id="{{$testCase->id}}">
 
                             @if(isset($results[$testCase->id]))
-                                @if($results[$testCase->id] == \App\Enums\TestRunCaseStatus::NOT_TESTED)
+                                @if($results[$testCase->id]->s == \App\Enums\TestRunCaseStatus::NOT_TESTED)
                                     <span class="badge bg-secondary">Not Tested</span>
-                                @elseif($results[$testCase->id] == \App\Enums\TestRunCaseStatus::PASSED)
+                                @elseif($results[$testCase->id]->s == \App\Enums\TestRunCaseStatus::PASSED)
                                     <span class="badge bg-success">Passed</span>
-                                @elseif($results[$testCase->id] == \App\Enums\TestRunCaseStatus::FAILED)
+                                @elseif($results[$testCase->id]->s == \App\Enums\TestRunCaseStatus::FAILED)
                                     <span class="badge bg-danger">Failed</span>
-                                @elseif($results[$testCase->id] == \App\Enums\TestRunCaseStatus::BLOCKED)
+                                @elseif($results[$testCase->id]->s == \App\Enums\TestRunCaseStatus::BLOCKED)
                                     <span class="badge bg-warning">Blocked</span>
                                 @endif
 

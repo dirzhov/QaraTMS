@@ -3,16 +3,10 @@
 
     <div class="d-flex justify-content-between border-bottom mt-2 pb-2 mb-2">
 
-
         <div style="min-width: 140px">
 
-            @if($testCase->priority == \App\Enums\CasePriority::LOW)
-                <i class="bi bi-chevron-double-down text-warning"></i>
-            @elseif($testCase->priority == \App\Enums\CasePriority::MEDIUM)
-                <i class="bi bi-list text-info"></i>
-            @elseif($testCase->priority == \App\Enums\CasePriority::HIGH)
-                <i class="bi bi-chevron-double-up text-danger"></i>
-            @endif
+            <i class="bi {{App\Enums\CasePriority::from($testCase->priority)->cls()}}"
+               title="{{ucfirst(mb_strtolower(App\Enums\CasePriority::from($testCase->priority)->name))}}"></i>
 
             <span>
                 @if($testCase->automated)
@@ -40,12 +34,32 @@
             <i class="bi bi-x-lg"></i>
         </button>
 
-
     </div>
 
     <div id="test_case_content" class="position-relative">
         <div class="p-4 pt-0">
+            @if(isset( $dependedTestCase ) )
+                <p>
+                    <b>Depended On:</b>
+                    <i class="bi {{App\Enums\CasePriority::from($dependedTestCase->priority)->cls()}}"
+                       title="{{ucfirst(mb_strtolower(App\Enums\CasePriority::from($dependedTestCase->priority)->name))}}"></i>
 
+                    <span>
+                    @if($dependedTestCase->automated)
+                            <i class="bi bi-robot mx-1"></i>
+                        @else
+                            <i class="bi bi-person mx-1"></i>
+                        @endif
+                </span>
+
+                    <u class="text-primary me-1">
+                        <a target="_blank" href="{{route('test_case_show_page', $dependedTestCase->id)}}">
+                            {{$repository->prefix}}-<span id="tce_case_id">{{$dependedTestCase->id}}</span>
+                        </a>
+                    </u>
+                    {{$dependedTestCase->title}}
+                </p>
+            @endif
             @if(isset( $data->preconditions) && !empty($data->preconditions) )
                 <strong class="fs-5 pb-3">Preconditions</strong>
 
@@ -71,8 +85,9 @@
                     </div>
 
                     @foreach($data->steps as $id => $step)
-                        <div class="row step border-top mb-2 pt-2" data-badge="{{$id+1}}">
+                        <div class="row step border-top py-2 {{$failedStep > 0 ? ($id+1 == $failedStep ? 'failed' : ($id+1 < $failedStep ? 'passed' : '')) : ''}}" data-badge="{{$id+1}}" >
 
+                            <sapn class="step-number">{{$id+1}}</sapn>
                             <div class="col-6">
                                 <div>
                                     @if(isset($step->action))

@@ -123,6 +123,13 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'api_token' => env('API_TOKEN', null),
+
+    'jira_token' => env('JIRA_TOKEN', null),
+    'jira_host' => env('JIRA_HOST', null),
+
+    'screenshots_dir' => env('SCREENSHOTS_DIR', 'screenshots'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
@@ -168,6 +175,8 @@ return [
         /*
          * Application Service Providers...
          */
+        App\Providers\RepositoryServiceProvider::class,
+
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
@@ -226,6 +235,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'UserPermission' => App\Enums\UserPermission::class,
     ],
 
 ];

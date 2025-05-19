@@ -20,6 +20,7 @@ class VerifyCsrfToken extends Middleware
         '/test-case/get',
         '/test-case/delete',
         '/test-case/update',
+        '/test-case/clone',
 
         '/get-repository-suites',
         '/get-test-suite',

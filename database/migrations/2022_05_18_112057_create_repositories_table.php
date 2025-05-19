@@ -19,6 +19,7 @@ class CreateRepositoriesTable extends Migration
             $table->string('title');
             $table->string("prefix", 3);
             $table->string('description')->nullable();
+            $table->foreignId('creator_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -1,0 +1,28 @@
+# execute specific migration
+php artisan migrate --path=/database/migrations/2025_04_08_000003_create_test_results_table.php
+php artisan migrate:refresh --path=/database/migrations/2025_04_08_000003_create_test_results_table.php
+
+# generate request class
+php artisan make:request TestAutomationRequest
+
+# clear cache (if add new routes for example)
+sudo php artisan cache:clear
+
+composer dump-autoload
+would recreate the autoloader files
+
+clear all:
+php artisan optimize:clear
+
+Compiled views cleared!
+Application cache cleared!
+Route cache cleared!
+Configuration cache cleared!
+Compiled services and packages files removed!
+Caches cleared successfully!
+
+# generate cache
+php artisan route:cache
+
+# view all routes
+php artisan route:list

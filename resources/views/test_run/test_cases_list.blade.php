@@ -32,25 +32,41 @@
                                     @else
                                         <i class="bi bi-person"></i>
                                     @endif </span>
+
+                                @if ($testCase->priority == 1)
+                                <i class="bi bi-chevron-double-up text-danger"></i>
+                                @elseif ($testCase->priority == 2)
+                                <i class="bi bi-chevron-up text-danger"></i>
+                                @elseif ($testCase->priority == 3)
+                                <i class="bi bi-list text-info"></i>
+                                @elseif ($testCase->priority == 4)
+                                <i class="bi bi-chevron-down text-warning"></i>
+                                @elseif ($testCase->priority == 5)
+                                <i class="bi bi-chevron-double-down text-warning"></i>
+                                @endif
+
                                 <span class="text-muted ps-1 pe-3 ">{{$repository->prefix}}-{{$testCase->id}}</span>
                                 <span>{{$testCase->title}}</span>
                             </div>
 
-                            <div class="result_badge pe-2" data-test_case_id="{{$testCase->id}}">
 
+                            <div class="result_badge px-2 pt-1 text-end" data-test_case_id="{{$testCase->id}}">
                                 @if(isset($results[$testCase->id]))
-                                    @if($results[$testCase->id] == \App\Enums\TestRunCaseStatus::NOT_TESTED)
-                                        <span class="badge bg-secondary">Not Tested</span>
-                                    @elseif($results[$testCase->id] == \App\Enums\TestRunCaseStatus::PASSED)
-                                        <span class="badge bg-success">Passed</span>
-                                    @elseif($results[$testCase->id] == \App\Enums\TestRunCaseStatus::FAILED)
-                                        <span class="badge bg-danger">Failed</span>
-                                    @elseif($results[$testCase->id] == \App\Enums\TestRunCaseStatus::BLOCKED)
-                                        <span class="badge bg-warning">Blocked</span>
+                                    @if($results[$testCase->id]->s == \App\Enums\TestRunCaseStatus::NOT_TESTED)
+                                        <span class="badge bg-secondary status float-end">Not Tested</span>
+                                    @elseif($results[$testCase->id]->s == \App\Enums\TestRunCaseStatus::PASSED)
+                                        <span class="badge bg-success status float-end">Passed</span>
+                                    @elseif($results[$testCase->id]->s == \App\Enums\TestRunCaseStatus::FAILED)
+                                        <span class="badge bg-danger status float-end">Failed</span>
+                                    @elseif($results[$testCase->id]->s == \App\Enums\TestRunCaseStatus::BLOCKED)
+                                        <span class="badge bg-warning status float-end">Blocked</span>
                                     @endif
 
                                 @else
-                                    <span class="badge bg-secondary">Not Tested</span>
+                                    <span class="badge bg-secondary status float-end">Not Tested</span>
+                                @endif
+                                @if (isset($results[$testCase->id]->a))
+                                    <small class="me-1 text-secondary">{{$users[$results[$testCase->id]->a]->name}}</small>
                                 @endif
                             </div>
                         </div>

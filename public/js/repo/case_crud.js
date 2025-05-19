@@ -36,7 +36,17 @@ function getTestCaseDataFromForm() {
     testCase.title = $("#tce_title_input").val();
     testCase.suite_id = $("#tce_test_suite_select").val();
     testCase.automated = $("#tce_automated_select").val();
+    testCase.automated_status = $("#tce_automated_status_select").val();
+    testCase.script_name = $("#tce_script_name_input").val();
     testCase.priority = $("#tce_priority_select").val();
+    testCase.severity = $("#tce_severity_select").val();
+    testCase.requirements = $("#tce_requirements_input").val();
+    testCase.assignee = $("#tce_assignee_select").val();
+
+    let components = $("#tce_components_select").val();
+    if (components) {
+        testCase.components = components;
+    }
 
     testCase.data = {};
     testCase.data['preconditions'] = $("#tce_preconditions_input").val();
@@ -65,7 +75,7 @@ function createTestCase(addAnother = false) {
     let newTestCase = getTestCaseDataFromForm();
 
     if (!newTestCase.title) {
-        alert('Title is required');
+        warningToast('Title is required', 'Create Test Case');
         return;
     }
 
@@ -76,13 +86,29 @@ function createTestCase(addAnother = false) {
             'title': newTestCase.title,
             'suite_id': newTestCase.suite_id,
             'automated': newTestCase.automated,
+            'automated_status': newTestCase.automated_status,
+            'script_name': newTestCase.script_name,
             'priority': newTestCase.priority,
+            'severity': newTestCase.severity,
+            'requirements': newTestCase.requirements,
+            'components': newTestCase.components,
+            'assignee': newTestCase.assignee,
             'order': $('.test_case').length + 1,
             'data': JSON.stringify(newTestCase.data)
         },
 
-        success: function (data) {  // response is case html and json
-            let testCase = $.parseJSON(data.json);
+        success: function (data) {
+            if (data.success == false) {
+                let message = ""
+                for (const field in data.data) {
+                    message += data.data[field];
+                }
+                errorToast(message,'Create Test Case');
+                return;
+            }
+
+            // let testCase = $.parseJSON(data.json);
+            let testCase = data.json;
 
             if (addAnother) {
                 loadTestCaseCreateForm();
@@ -91,7 +117,8 @@ function createTestCase(addAnother = false) {
             }
 
             loadCasesList(testCase.suite_id);
-        }
+        },
+        error: () => {errorToast('Some errors appear on server','Create Test Case');}
     });
 }
 
@@ -103,7 +130,7 @@ function updateTestCase() {
     let updatingTestCase = getTestCaseDataFromForm();
 
     if (!updatingTestCase.title) {
-        alert('Title is required');
+        warningToast('Title is required', 'Create Test Case');
         return;
     }
 
@@ -115,7 +142,13 @@ function updateTestCase() {
             'title': updatingTestCase.title,
             'suite_id': updatingTestCase.suite_id,
             'automated': updatingTestCase.automated,
+            'automated_status': updatingTestCase.automated_status,
+            'script_name': updatingTestCase.script_name,
             'priority': updatingTestCase.priority,
+            'severity': updatingTestCase.severity,
+            'requirements': updatingTestCase.requirements,
+            'components': updatingTestCase.components,
+            'assignee': updatingTestCase.assignee,
             'data': JSON.stringify(updatingTestCase.data)
         },
         success: function (data) {  // response is case html and json

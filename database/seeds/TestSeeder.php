@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserPermission;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -23,52 +24,52 @@ class TestSeeder extends Seeder
             'password' => Hash::make('password')
         ]);
 
-        Permission::create(['name' => 'manage_users']);
+        Permission::create(['name' => UserPermission::manage_users]);
 
-        Permission::create(['name' => 'add_edit_projects']);
-        Permission::create(['name' => 'delete_projects']);
+        Permission::create(['name' => UserPermission::add_edit_projects]);
+        Permission::create(['name' => UserPermission::delete_projects]);
 
-        Permission::create(['name' => 'add_edit_repositories']);
-        Permission::create(['name' => 'delete_repositories']);
+        Permission::create(['name' => UserPermission::add_edit_repositories]);
+        Permission::create(['name' => UserPermission::delete_repositories]);
 
-        Permission::create(['name' => 'add_edit_test_suites']);
-        Permission::create(['name' => 'delete_test_suites']);
+        Permission::create(['name' => UserPermission::add_edit_test_suites]);
+        Permission::create(['name' => UserPermission::delete_test_suites]);
 
-        Permission::create(['name' => 'add_edit_test_cases']);
-        Permission::create(['name' => 'delete_test_cases']);
+        Permission::create(['name' => UserPermission::add_edit_test_cases]);
+        Permission::create(['name' => UserPermission::delete_test_cases]);
 
-        Permission::create(['name' => 'add_edit_test_plans']);
-        Permission::create(['name' => 'delete_test_plans']);
+        Permission::create(['name' => UserPermission::add_edit_test_plans]);
+        Permission::create(['name' => UserPermission::delete_test_plans]);
 
-        Permission::create(['name' => 'add_edit_test_runs']);
-        Permission::create(['name' => 'delete_test_runs']);
+        Permission::create(['name' => UserPermission::add_edit_test_runs]);
+        Permission::create(['name' => UserPermission::delete_test_runs]);
 
-        Permission::create(['name' => 'add_edit_documents']);
-        Permission::create(['name' => 'delete_documents']);
+        Permission::create(['name' => UserPermission::add_edit_documents]);
+        Permission::create(['name' => UserPermission::delete_documents]);
 
         $adminUser->givePermissionTo([
-            'manage_users',
+            UserPermission::manage_users,
 
-            'add_edit_projects',
-            'delete_projects',
+            UserPermission::add_edit_projects,
+            UserPermission::delete_projects,
 
-            'add_edit_repositories',
-            'delete_repositories',
+            UserPermission::add_edit_repositories,
+            UserPermission::delete_repositories,
 
-            'add_edit_test_suites',
-            'delete_test_suites',
+            UserPermission::add_edit_test_suites,
+            UserPermission::delete_test_suites,
 
-            'add_edit_test_cases',
-            'delete_test_cases',
+            UserPermission::add_edit_test_cases,
+            UserPermission::delete_test_cases,
 
-            'add_edit_test_plans',
-            'delete_test_plans',
+            UserPermission::add_edit_test_plans,
+            UserPermission::delete_test_plans,
 
-            'add_edit_test_runs',
-            'delete_test_runs',
+            UserPermission::add_edit_test_runs,
+            UserPermission::delete_test_runs,
 
-            'add_edit_documents',
-            'delete_documents'
+            UserPermission::add_edit_documents,
+            UserPermission::delete_documents
         ]);
     }
 }

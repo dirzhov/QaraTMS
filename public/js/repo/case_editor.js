@@ -26,7 +26,7 @@ let testCaseAreaLocator = "#test_case_area";
 
 function loadTestCaseCreateForm() {
     if ($('#tree li').length <= 0) {
-        alert('Create at least one test suite.')
+        warningToast('Create at least one test suite.')
         return;
     }
 
@@ -73,16 +73,44 @@ function renderTestCaseEditForm(test_case_id) {
         if (isRepositoryOpened())
             collapseCasesList();
         renderEditors();
+
+        $(`.test_case`).removeClass("selected");
+        $(`.test_case[data-case_id='${test_case_id}']`).addClass('selected');
+    });
+}
+
+function cloneAndEditTestCase(test_case_id) {
+    $.ajax({
+        url: "/test-case/clone",
+        method: "POST",
+        data: {
+            "id": test_case_id
+        }
+    })
+    .done(function(resp) {
+        console.log(resp);
+        $(testCaseAreaLocator).load(`/tc/${resp.data.id}/edit`, function () {
+            $('textarea').autoResize();
+            oldParentId = $("#tccf_test_suite_select").val();
+            if (isRepositoryOpened())
+                collapseCasesList();
+            renderEditors();
+            loadCasesList(resp.data.suite_id);
+
+            $(`.test_case`).removeClass("selected");
+            $(`.test_case[data-case_id='${test_case_id}']`).addClass('selected');
+        });
+    })
+    .fail(function(resp) {
+        errorToast(resp.responseJSON.message + ":\n" + resp.responseJSON.data.title);
+    })
+    .always(function() {
     });
 }
 
 function closeTestCaseEditor() {
     $('#test_case_editor').remove();
     expandCasesList();
-}
-
-function closeTestCaseOverlay() {
-    $("#test_case_overlay").modal('hide');
 }
 
 function isTestCaseCreateOrEditFormLoaded() {
@@ -181,3 +209,4 @@ function renderStep(stepNumber) {
 
     $("#steps_container").append(stepHtml)
 }
+

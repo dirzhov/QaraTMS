@@ -50,6 +50,12 @@
                                 <span class="badge bg-secondary">{{$project->testRunsCount()}}</span>
                             </li>
                             <li class="list-group-item">
+                                <a href="{{route("autotest_run_list_page", $project->id)}}">
+                                    <i class="bi bi-play-circle"></i> {{ __('Automation Runs') }}
+                                </a>
+                                <span class="badge bg-secondary">{{$project->testRunsCount()}}</span>
+                            </li>
+                            <li class="list-group-item">
                                 <a href="{{route("project_documents_list_page", $project->id)}}">
                                     <i class="bi bi-file-text-fill"></i> {{ __('Documents') }}
                                     <span class="badge bg-secondary">{{$project->documentsCount()}}</span>

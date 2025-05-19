@@ -2,19 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserPermission;
 use App\Models\Project;
 use App\Models\Repository;
 use App\Models\Suite;
 use App\Models\TestPlan;
 use App\Models\TestRun;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TestPlanController extends Controller
 {
+    private User $creator;
+
+    public function useHooks()
+    {
+        $this->beforeCalling(['store', 'update'], function ($request, ...$params) {
+            if (!auth()->user()->can(UserPermission::add_edit_test_plans)) {
+                return response(null, 403);
+            }
+            $this->creator = User::findOrFail(Auth::id());
+        });
+    }
 
     public function startNewTestRun($test_plan_id)
     {
-        if (!auth()->user()->can('add_edit_test_runs')) {
+        if (!auth()->user()->can(UserPermission::add_edit_test_runs)) {
             abort(403);
         }
 
@@ -49,7 +63,7 @@ class TestPlanController extends Controller
 
     public function create($project_id)
     {
-        if (!auth()->user()->can('add_edit_test_plans')) {
+        if (!auth()->user()->can(UserPermission::add_edit_test_plans)) {
             abort(403);
         }
 
@@ -63,7 +77,7 @@ class TestPlanController extends Controller
 
     public function edit($project_id, $test_plan_id)
     {
-        if (!auth()->user()->can('add_edit_test_plans')) {
+        if (!auth()->user()->can(UserPermission::add_edit_test_plans)) {
             abort(403);
         }
 
@@ -88,10 +102,6 @@ class TestPlanController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->can('add_edit_test_plans')) {
-            abort(403);
-        }
-
         $request->validate([
             'title' => 'required',
         ]);
@@ -103,6 +113,7 @@ class TestPlanController extends Controller
         $testPlan->repository_id = $request->repository_id;
         $testPlan->description = $request->description;
         $testPlan->data = $request->data;  // это строка с id выбранных тест кейсов - 1,2,3 etc
+        $testPlan->creator_id = $this->creator->id;
 
         $testPlan->save();
 
@@ -111,16 +122,13 @@ class TestPlanController extends Controller
 
     public function update(Request $request)
     {
-        if (!auth()->user()->can('add_edit_test_plans')) {
-            abort(403);
-        }
-
         $testPlan = TestPlan::findOrFail($request->id);
 
         $testPlan->title = $request->title;
         $testPlan->description = $request->description;
         $testPlan->repository_id = $request->repository_id;
         $testPlan->data = $request->data;  // это строка с id выбранных тест кейсов - 1,2,3 etc
+        $testPlan->creator_id = $this->creator->id;
 
         $testPlan->save();
 
@@ -129,7 +137,7 @@ class TestPlanController extends Controller
 
     public function destroy(Request $request)
     {
-        if (!auth()->user()->can('delete_test_plans')) {
+        if (!auth()->user()->can(UserPermission::delete_test_plans)) {
             abort(403);
         }
 

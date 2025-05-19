@@ -27,10 +27,16 @@
         <div class="">
             @foreach($users as $user)
 
-                <div class="m-2 base_block shadow-sm border py-3 px-2 ps-4 d-flex justify-content-between  align-items-center">
+                <div class="m-2 base_block shadow-sm border py-3 px-2 ps-4 d-flex justify-content-between align-items-center">
                     <div>
-                        <b> {{$user->name}} </b> -
-                        <a href="mailto:{{$user->email}}">{{$user->email}}</a>
+                        @if (\App\Enums\UserStatus::SUSPENDED->value == $user->status)
+                        <b class="suspended"> {{$user->name}} </b>
+                        @elseif (\App\Enums\UserStatus::DELETED->value == $user->status)
+                        <b class="deleted"> {{$user->name}} </b>
+                        @else
+                        <b> {{$user->name}} </b>
+                        @endif
+                        - <a href="mailto:{{$user->email}}">{{$user->email}}</a>
                     </div>
 
                     @can('manage_users')

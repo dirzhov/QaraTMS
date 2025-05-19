@@ -11,7 +11,7 @@
                 Test Runs
 
                 @can('add_edit_test_runs')
-                    <a class="mx-3" href="{{route("test_run_create_page", $project->id)}}">
+                    <a class="mx-3" href="{{route("test_run_create_page", [$project->id, 0])}}">
                         <button type="button" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg"></i> New Test Run
                         </button>
                     </a>
@@ -40,7 +40,6 @@
                         </div>
 
                         <div class="border-top p-2">
-
 
                             @include('test_run.chart')
 

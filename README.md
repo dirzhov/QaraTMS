@@ -77,6 +77,42 @@ php artisan ide-helper:generate; php artisan ide-helper:models --write-mixin; ph
 6. Also, there is documentation module where you can store your project's documentation.<br>
    [![screenshot of documentation module](public/img/6_small.png)](public/img/6.png)
    <br><br>
+7. Automation test runs grid view.<br>
+   [<img src="public/img/autotest-runs-grid.png" width="854">](public/img/autotest-runs-grid.png)
+   <br><br>
+8. Automation test runs card view.<br>
+   [<img src="public/img/autotest-runs-card.png" width="854">](public/img/autotest-runs-card.png)
+   <br><br>
+9. View automation results with sorting/filtering/pagination<br>
+   [<img src="public/img/automation-results.png" width="854">](public/img/automation-results.png)
+   <br><br>
+10. View common statistics for automation run on charts<br>
+   [<img src="public/img/test-run-statistics.png" width="854">](public/img/test-run-statistics.png)
+   <br><br>
+11. View all JIRA defects assigned for test results<br>
+    [<img src="public/img/app-defects.png" width="854">](public/img/app-defects.png)
+    <br><br>
+12. Test result review with JIRA issues assignment<br>
+    [<img src="public/img/test-result-review.png">](public/img/test-result-review.png)
+    <br><br>
+13. View failed step of failed automated test<br>
+    [<img src="public/img/view-failed-test-case-step.png" width="854">](public/img/view-failed-test-case-step.png)
+    <br><br>
+14. View console log of automated test<br>
+    [<img src="public/img/test-log.png" width="854">](public/img/test-log.png)
+    <br><br>
+15. View error message with stacktrace, also screenshot can be here if uploaded by test<br>
+    [<img src="public/img/error-msg-stacktrace.png" width="854">](public/img/error-msg-stacktrace.png)
+    <br><br>
+16. Failed step can be marked for test for manual test run, also JIRA issues could be assigned or deleted<br>
+    [<img src="public/img/exec-test-run.png" width="854">](public/img/exec-test-run.png)
+    <br><br>
+17. Added full page TC editing with additional fields<br>
+    [<img src="public/img/create-test-full-page.png" width="854">](public/img/create-test-full-page.png)
+    <br><br>
+18. Added filtering test cases by priority and automation status when creating test plan<br>
+    [<img src="public/img/filtering-tests-in-test-plan.png" width="854">](public/img/filtering-tests-in-test-plan.png)
+    <br><br>
 
 ## Contributing
 

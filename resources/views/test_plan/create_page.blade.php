@@ -83,6 +83,17 @@
                     <h3>Select Test Cases</h3>
 
                     <div>
+                        <select id="automation_select" name="priority" class="selectpicker" multiple data-actions-box="true">
+                            @foreach (App\Enums\AutomationStatus::cases() as $option)
+                                <option value="{{$option->value}}">{{ucfirst(mb_strtolower($option->name))}}</option>
+                            @endforeach
+                        </select>
+                        <select id="priority_select" name="priority" class="selectpicker" multiple>
+                            @foreach (App\Enums\CasePriority::cases() as $option)
+                                <option value="{{$option->value}}" data-content="<i class='bi {{$option->cls()}} me-1'></i>{{ucfirst(mb_strtolower($option->name))}}"></option>
+                            @endforeach
+                        </select>
+
                         <button href="button" class="btn btn-outline-link" onclick="selectAllTestPlanCases()">
                             <i class="bi bi-check-all"></i> Select All
                         </button>

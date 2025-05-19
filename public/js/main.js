@@ -126,3 +126,219 @@ function isRepositoryOpened() {
 //             }
 //         }
 //     })
+
+
+function closeTestCaseOverlay() {
+    $("#test_case_overlay").modal('hide');
+}
+
+function createIssueList(issueInput, issuesInput, issuesList) {
+    $(issueInput).autocomplete({
+        filterMinChars: 5,
+        filterDelay: 1000,
+        filterAjaxParams: {
+            headers: {
+                'Authorization': `Bearer ${jiraToken}`,
+                'Content-Type': 'application/json'
+            }
+        },
+        labelKey: 'summary',
+        itemRenderer: function(dropdown, data) {
+            var item = $('<a class="dropdown-item" href="#"></a>');;
+            item.data(data);
+            item.html('[<a href="#">' + data.key + '</a>] ' + data[this.labelKey]).appendTo(dropdown);
+            return item;
+        },
+        preProcess: function(resp) {
+            let res = [];
+            if (resp instanceof Array)
+                for (const item of resp) {
+                    res.push({
+                        key: item.key,
+                        summary: item.fields.summary,
+                        issuetype: resp.fields.issuetype.name,
+                        status: resp.fields.status.name,
+                        iconUrl: item.fields.issuetype.iconUrl
+                    });
+                }
+            else if (typeof resp == 'object')
+                res.push({
+                    key: resp.key,
+                    summary: resp.fields.summary,
+                    issuetype: resp.fields.issuetype.name,
+                    status: resp.fields.status.name,
+                    iconUrl: resp.fields.issuetype.iconUrl
+                });
+
+            return res;
+        },
+        onPick(input, item) {
+            var data = $(item).data();
+
+            var value = $(issuesInput).val();
+            if (!value.includes(data.key)) {
+                value = value + (value == '' ? '' : ',') + data.key;
+                $(issuesInput).val(value);
+
+                $(issuesList).issuelist("_fetchPresetData", data);
+                $(issuesList).issuelist("refresh");
+            }
+
+            $(input).val(null);
+        }
+    });
+
+    $(issuesList).issuelist({
+        issueUrl: jiraUrl + '/browse/',
+        savedIssueKeys: $(issuesInput).val(),
+        prefetch: jiraUrl + '/rest/api/2/search?jql=issuekey in (%%ISSUES%%)&fields=summary,priority,status,issuetype',
+        preProcess: function(resp) {
+            var res = [];
+            if (resp instanceof Array)
+                for (const item of resp) {
+                    res.push({
+                        key: item.key,
+                        summary: item.fields.summary,
+                        issuetype: item.fields.issuetype.name,
+                        status: item.fields.status.name,
+                        iconUrl: item.fields.issuetype.iconUrl
+                    });
+                };
+            return res;
+        },
+        onBeforeFetch: function(el) {
+            $(".mask").removeClass("d-none");
+        },
+        onAfterFetch: function(el) {
+            $(".mask").addClass("d-none");
+        },
+        onBeforeDelete: function(delItem) {
+            var values = $(issuesInput).val().split(',');
+            var index = values.indexOf(delItem.data().key);
+            if (index >= 0)
+                values.splice(index, 1);
+
+            $(issuesInput).val(values.join(','));
+        }
+
+    });
+
+}
+
+
+/**
+ Handle clicks for pseudo-elements before/after
+ It is wise to make the parent element RELATIVE positioned. If you have an absolute positioned pseudo-element,
+ this function will only work if it is positioned based on the parent’s
+ dimensions(so the parent has to be relative…maybe sticky or fixed would work too….)
+ */
+function pseudoClick(parentElem) {
+
+    var beforeClicked,
+        afterClicked;
+
+    var parentLeft = parseInt(parentElem.getBoundingClientRect().left, 10),
+        parentTop = parseInt(parentElem.getBoundingClientRect().top, 10);
+
+    var before = window.getComputedStyle(parentElem, ':before');
+
+    var beforeStart = parentLeft + (parseInt(before.getPropertyValue("left"), 10)),
+        beforeEnd = beforeStart + parseInt(before.width, 10);
+
+    var beforeYStart = parentTop + (parseInt(before.getPropertyValue("top"), 10)),
+        beforeYEnd = beforeYStart + parseInt(before.height, 10);
+
+    var after = window.getComputedStyle(parentElem, ':after');
+
+    var afterStart = parentLeft + (parseInt(after.getPropertyValue("left"), 10)),
+        afterEnd = afterStart + parseInt(after.width, 10);
+
+    var afterYStart = parentTop + (parseInt(after.getPropertyValue("top"), 10)),
+        afterYEnd = afterYStart + parseInt(after.height, 10);
+
+    var mouseX = event.clientX,
+        mouseY = event.clientY;
+
+    beforeClicked = (mouseX >= beforeStart && mouseX <= beforeEnd && mouseY >= beforeYStart && mouseY <= beforeYEnd ? true : false);
+    afterClicked = (mouseX >= afterStart && mouseX <= afterEnd && mouseY >= afterYStart && mouseY <= afterYEnd ? true : false);
+
+    return {
+        "before" : beforeClicked,
+        "after"  : afterClicked
+    };
+
+}
+
+function errorToast(message, header) {
+    showToast(message, header, 'danger', 'sign-stop-fill')
+}
+function warningToast(message, header) {
+    showToast(message, header, 'warning', 'exclamation-circle-fill')
+}
+function infoToast(message, header) {
+    showToast(message, header, 'primary', 'info-circle-fill')
+}
+function successToast(message, header) {
+    showToast(message, header, 'success',check-circle)
+}
+
+function showToast(message, header, type, icon, isTop) {
+    isTop = isTop ?? true;
+    var toast,
+        type = type ?? "success",
+        position = isTop ? "top:60px" : "bottom:20px";
+
+    if (header == undefined) {
+        toast = $(
+`<div class="toast align-items-center text-bg-${type} show position-fixed end-0 z-3" style="${position}" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="d-flex">
+    <div class="toast-body">
+    ${message}
+   </div>
+    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>`);
+    } else {
+        toast = $(
+`<div class="toast show text-bg-${type} position-fixed end-0 z-3" style="${position}" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <i class="bi bi-${icon} me-2"></i>
+    <strong class="me-auto">${header}</strong>
+<!--    <small class="text-body-secondary">11 mins ago</small>-->
+    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div class="toast-body">
+    ${message}
+  </div>
+</div>`);
+    }
+
+    if (isTop) {
+        if ($('.toast').length > 0) {
+            $('.toast').first().before(toast);
+        } else
+            $('body').append(toast);
+    } else
+        $('body').append(toast);
+
+
+    var height = $(toast).height() + 10, len = $('.toast').length;
+
+    if (len > 1)
+    if (!isTop)
+        $('.toast').each((i,el) => {
+            if (i < len-1) {
+                el.style.bottom = (parseInt(el.style.bottom) + height) + 'px';
+            }
+        })
+    else
+        $('.toast').each((i,el) => {
+            if (i > 0) {
+                el.style.top = (parseInt(el.style.top) + height) + 'px';
+            }
+        })
+
+    setTimeout(function() {
+        toast.remove();
+    }, 5000)
+}

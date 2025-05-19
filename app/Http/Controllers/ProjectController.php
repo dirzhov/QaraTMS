@@ -2,13 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserPermission;
 use App\Models\Project;
 use App\Models\Repository;
 use App\Models\TestRun;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
+    private User $creator;
+
+    public function useHooks()
+    {
+        $this->beforeCalling(['store', 'update', 'create', 'edit'], function ($request, ...$params) {
+            if (!auth()->user()->can(UserPermission::add_edit_projects)) {
+                return response(null, 403);
+            }
+
+            $this->creator = User::findOrFail(Auth::id());
+        });
+    }
+
     /*****************************************
      *  PAGES
      *****************************************/
@@ -21,10 +37,6 @@ class ProjectController extends Controller
 
     public function create()
     {
-        if (!auth()->user()->can('add_edit_projects')) {
-            abort(403);
-        }
-
         return view('project.create_page');
     }
 
@@ -42,10 +54,6 @@ class ProjectController extends Controller
 
     public function edit($id)
     {
-        if (!auth()->user()->can('add_edit_projects')) {
-            abort(403);
-        }
-
         $project = Project::findOrFail($id);
         return view('project.edit_page')
             ->with('project', $project);
@@ -57,10 +65,6 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->can('add_edit_projects')) {
-            abort(403);
-        }
-
         $request->validate([
             'title' => 'required',
         ]);
@@ -69,6 +73,7 @@ class ProjectController extends Controller
 
         $project->title = $request->title;
         $project->description = $request->description;
+        $project->creator_id = $this->creator->id;
 
         $project->save();
 
@@ -78,22 +83,20 @@ class ProjectController extends Controller
         $repository->title = "Default";
         $repository->prefix = "D";
         $repository->description = "Default Test Repository. Test suites and test cases are located here";
-        $repository->save();
+        $repository->creator_id = $this->creator->id;
 
+        $repository->save();
 
         return redirect()->route('project_show_page', $project->id);
     }
 
     public function update(Request $request)
     {
-        if (!auth()->user()->can('add_edit_projects')) {
-            abort(403);
-        }
-
         $project = Project::findOrFail($request->id);
 
         $project->title = $request->title;
         $project->description = $request->description;
+        $project->creator_id = $this->creator->id;
 
         $project->save();
 
@@ -102,7 +105,7 @@ class ProjectController extends Controller
 
     public function destroy(Request $request)
     {
-        if (!auth()->user()->can('delete_projects')) {
+        if (!auth()->user()->can(UserPermission::delete_projects)) {
             abort(403);
         }
 

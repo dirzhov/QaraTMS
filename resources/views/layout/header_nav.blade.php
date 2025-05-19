@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse">
             {{-- DO NOT DISABE UL because form will be at start --}}
             <div class="navbar-nav nav-pills me-auto mb-2 mb-lg-0">
-                @if(Route::currentRouteName() == 'repository_show_page')
+                @if(in_array(Route::currentRouteName(), ['repository_show_page','test_results_page','statistic']))
                     <a href="{{route("project_show_page", $project->id)}}" class="nav-link text-white">
                         <i class="bi bi-kanban-fill"></i>&nbsp;{{__('Dashboard')}}
                     </a>
@@ -20,6 +20,11 @@
                     <a href="{{route("test_run_list_page", $project->id)}}" class="nav-link text-white">
                         <i class="bi bi-play-circle"></i>&nbsp;{{__('Test Runs')}}
                     </a>
+                    @canany(\App\Enums\UserPermission::view_automation_runs, \App\Enums\UserPermission::manage_automation_runs)
+                        <a href="{{route("autotest_run_list_page", $project->id)}}" class="nav-link text-white">
+                            <i class="bi bi-play-circle"></i>&nbsp;{{__('Automation Runs')}}
+                        </a>
+                    @endcanany
                     <hr>
                     <a href="{{route("project_documents_list_page", $project->id)}}" class="nav-link text-white">
                         <i class="bi bi-file-text-fill"></i>&nbsp;{{__('Documents')}}
@@ -33,6 +38,7 @@
                 @endif
             </div>
             <div class="d-flex justify-content-between align-items-center logout_block">
+                <span class="fs-5 me-2">{{Auth::user()->name}}</span>
                 <a href="https://github.com/a13xh7/QaraTMS" target="_blank">
                     <img src="{{asset('img/github.png')}}" alt="" width="30px">
                 </a>

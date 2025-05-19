@@ -53,4 +53,7 @@
         $(".badge.bg-secondary").first().click(); // select first untested case
     </script>
 
+    <script src="{{asset('/js/bootstrap-autocomplete.js')}}"></script>
+    <script src="{{asset('/js/issue-list.js')}}"></script>
+
 @endsection

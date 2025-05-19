@@ -109,7 +109,7 @@ function updateSuitesOrder() {
  *************************************************/
 function createSuite() {
     if (!suiteFormTitleInput.val()) {
-        alert('Title is required');
+        warningToast('Title is required');
         return;
     }
 
@@ -154,7 +154,7 @@ $("#test_suite_title_input").keyup(function (event) {
  *************************************************/
 function updateSuite() {
     if (!suiteFormTitleInput.val()) {
-        alert('Title is required');
+        warningToast('Title is required');
         return;
     }
 

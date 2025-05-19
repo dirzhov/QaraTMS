@@ -17,55 +17,112 @@
 
             <div class="row mb-3">
 
-                <div class="mb-3 d-flex justify-content-start border p-3 bg-light">
-
-                    <div>
-                        <label for="test_suite_id" class="form-label"><strong>Test Suite</strong></label>
-                        <select name="suite_id" id="tce_test_suite_select" class="form-select border-secondary">
-
-                            @foreach($repository->suites as $repoTestSuite)
-                                <option value="{{$repoTestSuite->id}}"
-                                        @if($repoTestSuite->id == $parentTestSuite->id)
-                                            selected
-                                        @endif
-                                >
-                                    {{$repoTestSuite->title}}
-                                </option>
-                            @endforeach
-
-                        </select>
-                    </div>
-
-                    <div class="mx-4">
-                        <label class="form-label">
-                            <b>Priority</b>
-                            <i class="bi bi-chevron-double-up text-danger"></i>|
-                            <i class="bi bi-list text-info"></i>|
-                            <i class="bi bi-chevron-double-down text-warning"></i>
-                        </label>
-
-                        <select id="tce_priority_select" name="priority" class="form-select border-secondary">
-                            <option value="{{\App\Enums\CasePriority::HIGH}}">High</option>
-                            <option value="{{\App\Enums\CasePriority::MEDIUM}}" selected> Medium</option>
-                            <option value="{{\App\Enums\CasePriority::LOW}}">Low</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="form-label"><b>Automation status</b> <i class="bi bi-person"></i> | <i
-                                    class="bi bi-robot"></i></label>
-                        <select name="automated" class="form-select border-secondary" id="tce_automated_select">
-                            <option value="0" selected> Manual</option>
-                            <option value="1">Automated</option>
-                        </select>
-                    </div>
-
+                <div class="mb-3 p-0 form-floating">
+                    <input name="title" id="tce_title_input" type="text" class="form-control border-secondary"
+                           placeholder="title" autofocus>
+                    <label for="title" class="form-label">Title</label>
                 </div>
 
-                <div class="mb-3 p-0">
-                    <label for="title" class="form-label"><b>Title</b></label>
-                    <input name="title" id="tce_title_input" type="text" class="form-control border-secondary"
-                           autofocus>
+                <div class="mb-3 justify-content-start border p-3 bg-light">
+
+                    <div class="d-flex mb-1">
+                        <div class="col">
+                            <label for="test_suite_id" class="form-label"><strong>Test Suite</strong></label>
+                            <select name="suite_id" id="tce_test_suite_select" class="selectpicker">
+
+                                @foreach($repository->suites as $repoTestSuite)
+                                    <option value="{{$repoTestSuite->id}}"
+                                            @if($repoTestSuite->id == $parentTestSuite->id)
+                                                selected
+                                            @endif
+                                    >
+                                        {{$repoTestSuite->title}}
+                                    </option>
+                                @endforeach
+
+                            </select>
+                        </div>
+                        <div class="col mx-4">
+                            <label class="form-label">
+                                <b>Assignee</b>
+                            </label>
+
+                            <select id="tce_assignee_select" name="assignee" class="selectpicker">
+                                @foreach($assignees as $assignee)
+                                    <option value="{{$assignee->id}}">
+                                        {{$assignee->name}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col me-4">
+                            <label class="form-label">
+                                <b>Priority</b>
+                            </label>
+
+                            <select id="tce_priority_select" name="priority" class="selectpicker">
+                                @foreach (App\Enums\CasePriority::cases() as $option)
+                                    <option value="{{$option->value}}" data-content="<i class='bi {{$option->cls()}} me-1'></i>{{ucfirst(mb_strtolower($option->name))}}"></option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                        <div class="col">
+                            <label class="form-label" for="automated"><b>Type</b> <i class="bi bi-person"></i> | <i
+                                        class="bi bi-robot"></i></label>
+                            <select name="automated" id="tce_automated_select" class="selectpicker col-12">
+                                @foreach (App\Enums\TestCaseType::cases() as $option)
+                                    <option value="{{$option->value}}" {{ ($option == App\Enums\TestCaseType::MANUAL) ? 'selected' : '' }}>
+                                        {{ucfirst(mb_strtolower($option->name))}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <p class="mb-0">
+                        <button type="button" class="btn btn-link expander" data-bs-toggle="collapse" data-bs-target=".multi-collapse"
+                                aria-expanded="false" aria-controls="tce_additional tce_additional2 tce_additional3">Show additional</button>
+                    </p>
+                    <div class="collapse multi-collapse row mb-3" id="tce_additional">
+                        <div class="col-6">
+                            <label class="form-label d-block" for="components"><b>Components</b></label>
+                            <select name="components" class="selectpicker col-12" multiple data-live-search="true" id="tce_components_select">
+                                @foreach($components as $component)
+                                    <option value="{{$component->id}}">
+                                        {{$component->title}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">
+                                <b>Severety</b>
+                            </label>
+
+                            <select id="tce_severity_select" name="severity" class="selectpicker col-12">
+                                @foreach (App\Enums\CaseSeverity::cases() as $option)
+                                    <option value="{{$option->value}}" data-content="<i class='bi {{$option->cls()}} me-1'></i>{{ucfirst(mb_strtolower($option->name))}}"></option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label"><b>Automation Status</b></label>
+                            <select id="tce_automated_status_select" name="automated_status" class="selectpicker col-12">
+                                @foreach (App\Enums\AutomationStatus::cases() as $option)
+                                    <option value="{{$option->value}}" {{ ( $option == App\Enums\AutomationStatus::NOT_AUTOMATED) ? 'selected' : '' }}>
+                                        {{str_replace("_", " ", ucfirst(mb_strtolower($option->name)))}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="collapse multi-collapse mb-3 mx-0 form-floating" id="tce_additional2">
+                        <input name="script_name" id="tce_script_name_input" type="text" class="form-control border-secondary" placeholder="package.class.method" autofocus>
+                        <label for="script_name" class="form-label">Script Name</label>
+                    </div>
+                    <div class="collapse multi-collapse mb-3 mx-0 form-floating" id="tce_additional3">
+                        <input name="requirements" id="tce_requirements_input" type="text" class="form-control border-secondary" placeholder="http://jira.ticket" autofocus>
+                        <label for="requirements" class="form-label">Requirements</label>
+                    </div>
                 </div>
 
                 <div class="col p-0">
@@ -115,7 +172,7 @@
         </div>
     </div>
 
-    <div id="test_case_editor_footer" class="col-5 d-flex justify-content-between border-top pt-2">
+    <div id="test_case_editor_footer" class="col-6 d-flex justify-content-between border-top pt-2">
         <div class="col">
             <button type="button" class="btn btn-primary" onclick="addStep()">
                 <i class="bi bi-plus-circle"></i>
@@ -136,3 +193,23 @@
     </div>
 
 </div>
+<script>
+    $("#tce_automated_select").on("change", function() {
+        console.log("triggered");
+        if ($(this).val() == 1)
+            $("#tce_automated_status_select").val(2);
+        else
+            $("#tce_automated_status_select").val(1);
+        $('.selectpicker').selectpicker('refresh')
+    });
+
+    $("#tce_automated_status_select").on("change", function() {
+        if ($(this).val() == 2)
+            $("#tce_automated_select").val(1);
+        else
+            $("#tce_automated_select").val(0);
+        $('.selectpicker').selectpicker('refresh')
+    });
+
+    $('.selectpicker').selectpicker();
+</script>

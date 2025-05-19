@@ -1,3 +1,4 @@
+@if(!in_array(Route::currentRouteName(), ['repository_show_page','test_results_page']))
 <div class="col-auto sidebar shadow-sm">
     <div style="margin-top: 20px;">
         @if(isset($project))
@@ -14,6 +15,11 @@
             <a href="{{route("test_run_list_page", $project->id)}}" class="nav-link text-white menu_link">
                 <i class="bi bi-play-circle"></i>&nbsp;{{__('Test Runs')}}
             </a>
+            @canany(\App\Enums\UserPermission::view_automation_runs, \App\Enums\UserPermission::manage_automation_runs)
+            <a href="{{route("autotest_run_list_page", $project->id)}}" class="nav-link text-white menu_link">
+                <i class="bi bi-play-circle"></i>&nbsp;{{__('Automation Runs')}}
+            </a>
+            @endcanany
             <a href="{{route("project_documents_list_page", $project->id)}}" class="nav-link text-white">
                 <i class="bi bi-file-text-fill"></i>&nbsp;{{__('Documents')}}
             </a>
@@ -31,3 +37,4 @@
         </a>
     </div>
 </div>
+@endif

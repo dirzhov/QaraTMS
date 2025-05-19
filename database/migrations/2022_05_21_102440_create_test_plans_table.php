@@ -17,9 +17,12 @@ class CreateTestPlansTable extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
             $table->integer('repository_id');
+            $table->integer('version')->comment("version of tested product");
+            $table->integer('type')->default(\App\Enums\TestingType::Regression)->comment("testing type");
             $table->string('title');
             $table->string('description')->nullable();
             $table->longText('data')->nullable();
+            $table->foreignId('creator_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

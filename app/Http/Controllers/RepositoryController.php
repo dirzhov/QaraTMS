@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserPermission;
+use App\Models\User;
 use App\Models\Project;
 use App\Models\Repository;
 use App\Models\Suite;
@@ -11,6 +13,19 @@ use Illuminate\Support\Facades\Cookie;
 
 class RepositoryController extends Controller
 {
+    private User $creator;
+
+    public function useHooks()
+    {
+        $this->beforeCalling(['store', 'update', 'create', 'edit'], function ($request, ...$params) {
+            if (!auth()->user()->can(UserPermission::add_edit_repositories)) {
+                return response(null, 403);
+            }
+
+            $this->creator = User::findOrFail(Auth::id());
+        });
+    }
+
     /*****************************************
      *  AJAX
      *****************************************/
@@ -60,10 +75,6 @@ class RepositoryController extends Controller
 
     public function create($project_id)
     {
-        if (!auth()->user()->can('add_edit_repositories')) {
-            abort(403);
-        }
-
         $project = Project::findOrFail($project_id);
         return view('repository.create_page')
             ->with('project', $project);
@@ -76,8 +87,8 @@ class RepositoryController extends Controller
         $suitesTree = Suite::where('repository_id', $repository_id)->orderBy('order')->tree()->get()->toTree();
 
         $user = Auth::user();
-        $canEditSuites = $user->can('add_edit_test_suites') == true ? 1 : 0;
-        $canDeleteSuites = $user->can('delete_test_suites') == true ? 1 : 0;
+        $canEditSuites = $user->can(UserPermission::add_edit_test_suites) == true ? 1 : 0;
+        $canDeleteSuites = $user->can(UserPermission::delete_test_suites) == true ? 1 : 0;
 
         return view('repository.show_page')
             ->with('project', $project)
@@ -89,10 +100,6 @@ class RepositoryController extends Controller
 
     public function edit($project_id, $repository_id)
     {
-        if (!auth()->user()->can('add_edit_repositories')) {
-            abort(403);
-        }
-
         $project = Project::findOrFail($project_id);
         $repository = Repository::findOrFail($repository_id);
 
@@ -107,10 +114,6 @@ class RepositoryController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->can('add_edit_repositories')) {
-            abort(403);
-        }
-
         $request->validate([
             'title' => 'required',
             'project_id' => 'required',
@@ -122,6 +125,7 @@ class RepositoryController extends Controller
         $repository->prefix = $request->prefix;
         $repository->project_id = $request->project_id;
         $repository->description = $request->description;
+        $repository->creator_id = $this->creator->id;
 
         $repository->save();
 
@@ -130,16 +134,13 @@ class RepositoryController extends Controller
 
     public function update(Request $request)
     {
-        if (!auth()->user()->can('add_edit_repositories')) {
-            abort(403);
-        }
-
         $repository = Repository::findOrFail($request->id);
 
         $repository->title = $request->title;
         $repository->prefix = $request->prefix;
         $repository->project_id = $request->project_id;
         $repository->description = $request->description;
+        $repository->creator_id = $this->creator->id;
 
         $repository->save();
 
@@ -148,7 +149,7 @@ class RepositoryController extends Controller
 
     public function destroy(Request $request)
     {
-        if (!auth()->user()->can('delete_repositories')) {
+        if (!auth()->user()->can(UserPermission::delete_repositories)) {
             abort(403);
         }
 

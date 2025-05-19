@@ -13,21 +13,16 @@
              onclick="renderTestCase('{{$testCase->id}}')">
             <div class="me-1 test_case_info">
 
-                @if($testCase->priority == CasePriority::MEDIUM)
-                    <i class="bi bi-list text-info"></i>
-                @elseif($testCase->priority == CasePriority::HIGH)
-                    <i class="bi bi-chevron-double-up text-danger"></i>
-                @else
-                    <i class="bi bi-chevron-double-down text-warning"></i>
-                @endif
+                <i class="bi {{App\Enums\CasePriority::from($testCase->priority)->cls()}}"
+                   title="{{ucfirst(mb_strtolower(App\Enums\CasePriority::from($testCase->priority)->name))}}"></i>
 
                 <span>
-                        @if($testCase->automated)
+                    @if($testCase->automated)
                         <i class="bi bi-robot mx-1"></i>
                     @else
                         <i class="bi bi-person mx-1"></i>
                     @endif
-                    </span>
+                </span>
 
                 <u class="text-primary under">
                     <a href="{{route('test_case_show_page', $testCase->id)}}" target="_blank">{{$repository->prefix}}
@@ -50,6 +45,13 @@
                 <button class="btn py-0 px-1" type="button" title="Edit"
                             onclick="renderTestCaseEditForm('{{$testCase->id}}')">
                     <i class="bi bi-pencil"></i>
+                </button>
+            @endcan
+
+            @can('add_edit_test_cases')
+                <button class="btn py-0 px-1" type="button" title="Clone"
+                        onclick="cloneAndEditTestCase('{{$testCase->id}}')">
+                    <i class="bi bi-copy"></i>
                 </button>
             @endcan
 

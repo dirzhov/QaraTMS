@@ -46,11 +46,11 @@ function loadCasesList(id) {
  * Collapse / expand test cases list
  **************************************************/
 function expandCasesList() {
-    $('#test_cases_list_col').addClass('col-9').removeClass('col')
+    $('#test_cases_list_col').addClass('col-10').removeClass('col')
 }
 
 function collapseCasesList() {
-    $('#test_cases_list_col').addClass('col').removeClass('col-9')
+    $('#test_cases_list_col').addClass('col').removeClass('col-10')
 }
 
 /**************************************************

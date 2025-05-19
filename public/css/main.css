@@ -33,6 +33,14 @@ a {
     text-decoration: none;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-default {
+    cursor: default;
+}
+
 /****************************************************
 * Overlay
 ****************************************************/
@@ -47,6 +55,22 @@ a {
     background-color: #00000038;
 }
 
+.mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 9999;
+    background: rgba(0,0,0,0.5);
+}
+.mask .spinner-border {
+    position: absolute;
+    top: 50%;
+}
 /*************************************************************************************
 * Editor
 *************************************************************************************/
@@ -196,10 +220,15 @@ Scrollbar
     padding-bottom: 40px !important;
 }
 
-.selected {
+.selected:not(.dropdown-item) {
     border: 1px solid rgba(25, 54, 84, 0.22) !important;
     background: #edf7fb !important;
     border-radius: 3px;
+}
+
+.badge.status {
+    width: 76px;
+    margin-top: 2px;
 }
 
 /****************************************************
@@ -222,7 +251,7 @@ Scrollbar
 }
 
 .test_case_controls {
-    min-width: 70px;
+    min-width: 100px;
     padding-top: 7px;
 }
 
@@ -261,6 +290,11 @@ Scrollbar
 #test_case_editor_footer {
     position: absolute;
     bottom: 10px;
+    width: 100%;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: fill-available;
+
 }
 
 .test_case_step {
@@ -289,25 +323,6 @@ Scrollbar
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -381,26 +396,122 @@ Scrollbar
     min-width: 700px;
     padding-left: 10px;
     padding-right: 10px;
+    position: relative;
 }
 
 
-
-[data-badge]:after {
+.step-number {
     background: #6c757d;
     border-radius: 50px;
     color: white;
-    content: attr(data-badge);
     font-size: 11px;
     /*margin-top: -10px;*/
     min-width: 20px;
+    width: 20px;
     padding: 2px;
     position: absolute;
     text-align: center;
     font-weight: bolder;
-    left: 2px;
+    left: -14px;
+    cursor: pointer;
+}
+/*[data-badge]:after {*/
+/*    background: #6c757d;*/
+/*    border-radius: 50px;*/
+/*    color: white;*/
+/*    content: attr(data-badge);*/
+/*    font-size: 11px;*/
+/*    !*margin-top: -10px;*!*/
+/*    min-width: 20px;*/
+/*    padding: 2px;*/
+/*    position: absolute;*/
+/*    text-align: center;*/
+/*    font-weight: bolder;*/
+/*    !*left: 2px;*!*/
+/*    left: -14px;*/
+/*}*/
+#test_case_block .step-number:hover::after {
+    content: attr(data-tooltip);
+    font-size: .7rem;
+    color: white;
+    background-color: #FF2233;
+    border-radius: 5px;
+    border: 2px solid #FFAABB;
+    top: 20px;
+    left: 15px;
+    min-width: 100px;
+    width: 100%;
+    position: absolute;
+    z-index: 1000;
+    padding: 2px 4px;
 }
 
 #steps_container b {
     font-weight: 600;
 }
 
+#steps_container .step {
+    position: relative;
+    &.passed {
+        background-color: #ebf7fb;
+    }
+    &.failed {
+        background-color: #ffc4c4;
+    }
+    &.skipped {
+        background-color: #d9d9d9;
+    }
+    & p {
+        margin-bottom: 0;
+    }
+}
+
+b.deleted {
+    color: #6c6c6c;
+    text-decoration: line-through;
+}
+b.suspended {
+    color: #a20000;
+}
+
+.expander::before,
+.expander::after {
+    display: inline-block;
+    content: "";
+    border-top: 1px solid #ccc;
+    width: 20rem;
+    margin: 0 0.5rem;
+    transform: translateY(-0.3rem);
+}
+
+#tce_title_input {
+    font-size: 1.4rem;
+}
+
+.fs-s{
+    font-size: 14px;
+}
+
+[class$="table-header"] .form-select {
+    background-position: right .25rem center;
+    padding: .200rem 1.75rem .200rem .50rem;
+}
+
+.autotest-run-progress {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 4px;
+    vertical-align: middle;
+
+    .progress {
+        --bs-progress-height: 1.3rem;
+    }
+}
+
+#total-chart-stat .progress {
+    border-radius: unset;
+}
+
+.bootstrap-table tbody tr.active {
+    --bs-table-bg: #c2c6df;
+}

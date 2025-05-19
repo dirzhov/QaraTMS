@@ -2,12 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserPermission;
 use App\Models\Document;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DocumentsController extends Controller
 {
+    private User $creator;
+
+    public function useHooks()
+    {
+        $this->beforeCalling(['store', 'update', 'create', 'edit'], function ($request, ...$params) {
+            if (!auth()->user()->can(UserPermission::add_edit_documents)) {
+                return response(null, 403);
+            }
+            $this->creator = User::findOrFail(Auth::id());
+        });
+    }
+
     /*****************************************
      *  PAGES
      *****************************************/
@@ -26,10 +41,6 @@ class DocumentsController extends Controller
 
     public function create($project_id) // create page
     {
-        if (!auth()->user()->can('add_edit_documents')) {
-            abort(403);
-        }
-
         $project = Project::findOrFail($project_id);
         $documents = Document::where('project_id', $project->id)->tree()->get()->toTree();
 
@@ -52,10 +63,6 @@ class DocumentsController extends Controller
 
     public function edit($project_id, $document_id)
     {
-        if (!auth()->user()->can('add_edit_documents')) {
-            abort(403);
-        }
-
         $project = Project::findOrFail($project_id);
         $documents = Document::where('project_id', $project->id)->tree()->get()->toTree();
         $selectedDocument = Document::findOrFail($document_id);
@@ -72,10 +79,6 @@ class DocumentsController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->can('add_edit_documents')) {
-            abort(403);
-        }
-
         $request->validate([
             'title' => 'required',
         ]);
@@ -86,6 +89,7 @@ class DocumentsController extends Controller
         $document->project_id = $request->project_id;
         $document->parent_id = $request->parent_id;
         $document->content = $request->get('content');
+        $document->creator_id = $this->creator->id;
 
         $document->save();
 
@@ -94,15 +98,12 @@ class DocumentsController extends Controller
 
     public function update(Request $request)
     {
-        if (!auth()->user()->can('add_edit_documents')) {
-            abort(403);
-        }
-
         $document = Document::findOrFail($request->id);
 
         $document->title = $request->title;
         $document->parent_id = $request->parent_id;
         $document->content = $request->post('content');
+        $document->creator_id = $this->creator->id;
 
         $document->save();
 
@@ -111,7 +112,7 @@ class DocumentsController extends Controller
 
     public function destroy(Request $request)
     {
-        if (!auth()->user()->can('delete_documents')) {
+        if (!auth()->user()->can(UserPermission::delete_documents)) {
             abort(403);
         }
 

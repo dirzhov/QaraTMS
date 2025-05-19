@@ -20,7 +20,7 @@
         </div>
 
 
-        <div class="row row-cols-1 row-cols-md-6 g-2 text-secondary ">
+        <div class="row row-cols-7 g-2 text-secondary ">
 
             <div class="col">
                 <div class="card base_block border shadow-sm rounded">
@@ -100,6 +100,19 @@
                                 <i class="bi bi-play-circle"></i> {{ __('Test Runs') }}
                             </a>
                             <span class="badge bg-secondary">{{$project->testRunsCount()}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card base_block border shadow-sm rounded">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <a href="{{route("autotest_run_list_page", $project->id)}}">
+                                <i class="bi bi-play-circle"></i> {{ __('Automation Runs') }}
+                            </a>
+                            <span class="badge bg-secondary">{{$project->automationTestRunsCount()}}</span>
                         </div>
                     </div>
                 </div>
