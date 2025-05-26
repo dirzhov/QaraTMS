@@ -16,12 +16,15 @@ class CreateTestRunsTable extends Migration
         Schema::create('test_runs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('test_plan_id')->constrained('test_plans')->onDelete('cascade');
-            $table->integer('project_id');
+            $table->unsignedInteger('project_id');
             $table->string('title');
             $table->boolean('is_automation')->comment("it is automation run or manual");
             $table->boolean('for_local_run')->default(false)
                 ->comment("indicate this run as for local execution for each developer, will not be included into general statistic");
-            $table->integer('environment')->comment("1-dev,2-container,3-staging,4-production");
+            $table->tinyInteger('job_status')->default(0)
+                ->comment("0 - not run, 1 - run, 2 - stopped, 3 - passed, 4 - failed");
+            $table->unsignedInteger('job_id')->nullable(true)->comment("jenkins job id");
+            $table->tinyInteger('environment')->comment("1-dev,2-container,3-staging,4-production");
             $table->string('os')->nullable()->comment("win,linux,ios");
             $table->string('browser')->nullable()->comment("for playwright: chrome,firefox,webkit");
             $table->string('device')->nullable()->comment("mobile,desktop,etc");

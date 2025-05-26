@@ -81,7 +81,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="testing_type_id" class="form-label col-3">Testing type</label>
+                        <label for="testing_type_id" class="form-label col-3">Testing Type</label>
                         <select id="testing_type_id" name="testing_type" class="selectpicker">
                             @foreach (App\Enums\TestingType::cases() as $option)
                                 <option value="{{$option->value}}" data-content="<i class='bi {{$option->cls()}} me-1'>

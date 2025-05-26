@@ -100,8 +100,6 @@ class TestPlanController extends Controller
 
     public function store(TestPlanRequest $request)
     {
-        $request->validate([]);
-
         $testPlan = new TestPlan();
 
         $testPlan->title = $request->title;
@@ -120,8 +118,6 @@ class TestPlanController extends Controller
 
     public function update(TestPlanRequest $request)
     {
-        $request->validate([]);
-
         $testPlan = TestPlan::findOrFail($request->id);
 
         $testPlan->title = $request->title;

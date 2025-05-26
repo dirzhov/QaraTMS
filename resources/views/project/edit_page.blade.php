@@ -62,10 +62,10 @@
                 <div class="mb-3 row">
                     <div class="col-6">
                         <div class="row mb-2">
-                            <div class="col-8">
+                            <div class="col-10">
                                 <input type="text" class="form-control" id="version_title" maxlength="100">
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <span id="save_version" class="btn btn-success btn-md me-2">
                                     <i class="bi bi-floppy"></i>
                                 </span>

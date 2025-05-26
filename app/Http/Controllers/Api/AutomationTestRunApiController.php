@@ -42,21 +42,27 @@ class AutomationTestRunApiController extends Controller
 
         $page = ($offset + $pageSize) / $pageSize;
 
-        $testRuns = TestRun::where('project_id', $project->id)
-            ->select(['test_runs.*','users.name as creator'])
-            ->where('is_automation', 1)
-            ->join('users', 'users.id', '=', 'test_runs.creator_id')
+        $testRuns = TestRun::where('t.project_id', $project->id)
+            ->select(['t.*', 'users.name as creator', 'v.id as version_id', 'v.name as version', 't.job_status'])
+            ->from('test_runs as t')
+            ->where('t.is_automation', 1)
+            ->join('users', 'users.id', '=', 't.creator_id')
+            ->join('test_plans as tp', 'tp.id', '=', 't.test_plan_id')
+            ->leftJoin('product_versions as v', 'v.id', '=', 'tp.version')
             ->orderBy($sort, $order)
             ->paginate($pageSize, ['*'], 'page', $page);
 
-        $testRuns = TestRunResource::collection($testRuns)->map(function ($testRun) use ($project_id) {
+        $testRuns = TestRunResource::collection($testRuns)->map(function ($testRun) {
             $testRun['status'] = $testRun->getChartData();
             $testRun['url'] = route('test_results_page', [$testRun->id]);
             $testRun->created_at = $testRun->created_at->format('d-m-y H:i');
             if ($testRun->environment > 0)
                 $testRun->environment = Environment::from($testRun->environment)->name;
+
+            unset($testRun->data);
+
             return $testRun;
-        })->all();
+        })->toArray();
 
         return ApiResponseClass::sendResponse($testRuns,'Automation test runs',201);
     }

@@ -190,8 +190,8 @@
 
         window.detailFormatter = (index, row) => {
             return `<p>` +
-                (row.error_message ? `<b>${row.error_message}:</b>` : '') +
-                (row.full_error ? `<div class="position-relative"><pre>${row.full_error}:</pre>
+                (row.error_message ? `<b>${escapeHTML(row.error_message)}:</b>` : '') +
+                (row.full_error ? `<div class="position-relative"><pre>${escapeHTML(row.full_error)}:</pre>
                 <button class="btn py-0 px-1 position-absolute" style="top:10px;right:10px;" type="button" title="Copy" onclick="copyToClipboard(${row.id})">
                     <i class="bi bi-copy"></i>
                 </button></div>` : '') + `</p>`+

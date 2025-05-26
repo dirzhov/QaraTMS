@@ -29,6 +29,7 @@
         <div class="row row-cols-1 row-cols-md-1 g-3">
             <table
                     id="table"
+                    data-unique-id="id"
                     data-show-toggle="true"
                     data-show-columns="true"
                     data-show-refresh="true"
@@ -51,8 +52,14 @@
                     <th data-field="id" data-width="50">
                         Id
                     </th>
+                    <th data-field="job_status" data-formatter="runFormatter" data-width="80">
+                        Run
+                    </th>
                     <th data-field="title" data-sortable="true" data-formatter="titleFormatter" data-width="30" data-width-unit="%">
                         Title
+                    </th>
+                    <th data-field="version" data-sortable="true" data-width="100">
+                        Version
                     </th>
                     <th data-field="created_at" data-width="160" data-sortable="true">
                         Start time
@@ -60,10 +67,25 @@
                     <th data-field="groups">
                         Groups
                     </th>
+                    <th data-field="priorities" data-formatter="priorityFormatter" data-visible="false">
+                        Priorities
+                    </th>
                     <th data-field="environment" data-sortable="true" data-width="10" data-width-unit="%">
                         Environment
                     </th>
-                    <th data-field="creator">
+                    <th data-field="os" data-formatter="osFormatter" data-sortable="true" data-width="100" data-visible="true">
+                        OS
+                    </th>
+                    <th data-field="device" data-formatter="deviceFormatter" data-sortable="true" data-width="100" data-visible="false">
+                        Device
+                    </th>
+                    <th data-field="browser" data-formatter="browserFormatter" data-sortable="true" data-width="100" data-visible="false">
+                        Browser
+                    </th>
+                    <th data-field="run_parameters" data-sortable="true" data-width="120" data-visible="false">
+                        Run Parameters
+                    </th>
+                    <th data-field="creator" data-width="120" data-visible="false">
                         Creator
                     </th>
                     <th data-field="status" data-formatter="statusFormatter">
@@ -127,6 +149,8 @@
     </template>
 
     <script>
+        const table = $('#table');
+
         window.ajaxOptions = {
             beforeSend (xhr) {
                 xhr.setRequestHeader('custom-auth-token', 'custom-auth-token')
@@ -139,6 +163,16 @@
 
             }
         }
+
+        function escapeString(str) {
+            return str
+                .replace(/\\/g, '\\\\')   // Escape backslashes
+                .replace(/"/g, '\\"')     // Escape double quotes
+                .replace(/\n/g, '\\n')    // Escape newlines
+                .replace(/\r/g, '\\r')    // Escape carriage returns
+                .replace(/\t/g, '\\t');   // Escape tabs
+        }
+
         window.statusFormatter = (value, row) => {
 
             return `<div class="progress">
@@ -162,12 +196,93 @@
             </div>
         </div>`
         }
+
         window.titleFormatter = (value, row) => {
             return `<a href="${row.url}">${value}</a>`
         }
 
+        window.priorityFormatter = (value, row) => {
+            var result = '';
+            if (value != null && value.length) {
+                for (var p of value.split(',')) {
+                    if (result != '') result += ', ';
+                    result += renderPriority(p, true);
+                }
+            }
+            return result;
+        }
+
+        const browserMap = {
+            'chrome':'browser-chrome',
+            'chromium':'browser-chrome',
+            'edge':'browser-edge',
+            'firefox':'browser-firefox',
+            'safari':'browser-safari',
+            'webkit':'browser-safari'
+        }
+        const osMap = {
+            'windows':'windows',
+            'win':'windows',
+            'win10':'windows',
+            'win11':'windows',
+            'ubuntu':'ubuntu',
+            'linux':'tencent-qq',
+            'ios':'apple',
+            'macos':'apple',
+            'android':'android2'
+        }
+        const deviceMap = {
+            'tablet':'tablet',
+            'mobile':'phone',
+            'desktop':'pc-display',
+            'cloud':'cloud-upload',
+        }
+
+        const commonFormatter = (value, map) => {
+            if (map[value] !== undefined)
+                return `<i class="bi bi-${map[value]} text-primary me-1"></i>${value}`;
+            else
+                return value;
+        }
+        window.browserFormatter = (value) => {
+            return commonFormatter(value, browserMap)
+        }
+
+        window.osFormatter = (value) => {
+            return commonFormatter(value, osMap)
+        }
+
+        window.deviceFormatter = (value) => {
+            return commonFormatter(value, deviceMap)
+        }
+
+        window.runFormatter = (value, row) => {
+            if (value == 0)
+                return `<div class="text-center">
+<span class="btn btn-sm btn-outline-success lh-1" onclick="startJob(${row.id})" title="Click to start">
+<i class="bi bi-play-btn fs-5"></i>
+</span></div>`
+            else if (value == 1)
+                return `<div class="text-center">
+<span class="btn btn-sm btn-outline-primary lh-1" onclick="stopJob(${row.id})" title="Running. Click to stop">
+<span class="run_spinner spinner-grow spinner-grow-sm" role="status"></span>
+<i class="bi bi-stop-btn fs-5"></i></span></div>`
+            else if (value == 2)
+                return `<div class="text-center">
+<span class="btn btn-sm btn-outline-secondary lh-1" onclick="resetJob(${row.id})" title="Aborted! Click to ReInit">
+<i class="bi bi-stop-btn fs-5"></i></span></div>`
+            else if (value == 3)
+                return `<div class="text-center">
+<span class="text-success lh-1" title="Finished">
+<i class="bi bi-check-circle-fill fs-5"></i></span></div>`
+            else if (value == 4)
+                return `<div class="text-center">
+<span class="text-danger lh-1" title="Failed">
+<i class="bi bi-exclamation-circle-fill fs-5"></i></span></div>`
+        }
+
         $(function() {
-            $('#table').bootstrapTable({
+            table.bootstrapTable({
                 {{--data: [--}}
                 {{--        @foreach($testRuns as $testRun)--}}
                 {{--    {--}}
@@ -213,6 +328,40 @@
             })
 
             return `<div class="row mx-0">${view}</div>`
+        }
+
+        function startJob(id) {
+            const row = table.bootstrapTable('getRowByUniqueId', id);
+            console.log(row);
+
+            table.bootstrapTable('updateCellByUniqueId', {
+                id: id,
+                field: 'job_status',
+                value: 1,
+                reinit: false
+            })
+        }
+
+        function stopJob(id) {
+            const row = table.bootstrapTable('getRowByUniqueId', id);
+            console.log(row);
+
+            table.bootstrapTable('updateCellByUniqueId', {
+                id: id,
+                field: 'job_status',
+                value: 2,
+                reinit: false
+            })
+        }
+
+        function resetJob(id) {
+            const row = table.bootstrapTable('getRowByUniqueId', id);
+            table.bootstrapTable('updateCellByUniqueId', {
+                id: id,
+                field: 'job_status',
+                value: 0,
+                reinit: false
+            })
         }
     </script>
 

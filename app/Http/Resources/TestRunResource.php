@@ -17,6 +17,8 @@ class TestRunResource extends JsonResource
             'id' =>$this->id,
             'test_plan_id' => $this->test_plan_id,
             'project_id' => $this->project_id,
+            'version_id' => $this->version_id,
+            'version' => $this->version,
             'title' => $this->title,
             'data' => json_decode($this->data),
             'created_at' => $this->created_at,
@@ -29,8 +31,9 @@ class TestRunResource extends JsonResource
             'device' => $this->device,
             'run_parameters' => $this->run_parameters,
             'groups' => $this->groups,
-            'properties' => $this->properties,
+            'priorities' => $this->priorities,
             'is_automation' => $this->is_automation,
+            'job_status' => $this->job_status,
             'status' => $this->status,
             'url' => $this->url
         ];

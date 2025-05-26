@@ -342,3 +342,29 @@ function showToast(message, header, type, icon, isTop) {
         toast.remove();
     }, 5000)
 }
+
+const escapeHTML = str =>
+    str.replace(
+        /[&<>'"]/g,
+        tag =>
+            ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag] || tag)
+    );
+
+const unescapeHTML = str =>
+    str.replace(
+        /&amp;|&lt;|&gt;|&#39;|&quot;/g,
+        tag =>
+            ({
+                '&amp;': '&',
+                '&lt;': '<',
+                '&gt;': '>',
+                '&#39;': "'",
+                '&quot;': '"'
+            }[tag] || tag)
+    );

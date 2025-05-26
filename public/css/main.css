@@ -525,3 +525,9 @@ b.suspended {
 .bootstrap-table tbody tr.active {
     --bs-table-bg: #c2c6df;
 }
+
+.run_spinner {
+    width: 12px;
+    height: 12px;
+    margin-bottom: 3px;
+}
