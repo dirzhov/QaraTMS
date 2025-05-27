@@ -11,6 +11,7 @@ function renderEditors() {
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['picture'],
+                ['view',['codeview','fullscreen']],
             ]
         },
     );
