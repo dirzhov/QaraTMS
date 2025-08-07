@@ -85,7 +85,7 @@
                     </div>
 
                     @foreach($data->steps as $id => $step)
-                        <div class="row step border-top py-2 {{$failedStep > 0 ? ($id+1 == $failedStep ? 'failed' : ($id+1 < $failedStep ? 'passed' : '')) : ''}}" data-badge="{{$id+1}}" >
+                        <div class="row step border-top py-2 {{isset($failedStep) && $failedStep > 0 ? ($id+1 == $failedStep ? 'failed' : ($id+1 < $failedStep ? 'passed' : '')) : ''}}" data-badge="{{$id+1}}" >
 
                             <sapn class="step-number">{{$id+1}}</sapn>
                             <div class="col-6">
