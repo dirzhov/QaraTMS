@@ -107,8 +107,8 @@ function createTestCase(addAnother = false) {
                 return;
             }
 
-            // let testCase = $.parseJSON(data.json);
-            let testCase = data.json;
+            let testCase = $.parseJSON(data.json);
+            // let testCase = data.json;
 
             if (addAnother) {
                 loadTestCaseCreateForm();
